@@ -8,7 +8,7 @@
 
 %% Replace the title, name, advisor name, graduation date and dedication below with
 %% your own. Graduation months must be January, May or September.
-\newcommand{\thesistitle}{Translation Operators for Translation-Variant \\Modal Green's Functions}
+\newcommand{\thesistitle}{Translation Operators for Translation-Variant Modal Green's Functions in the Kernel-Independent Fast Multipole Method}
 \newcommand{\thesisauthor}{Victor Churchill}
 \newcommand{\thesisadvisor}{Professor Michael O'Neil}
 \newcommand{\graddate}{May 2016}
@@ -151,7 +151,6 @@
 \input{intro}
 %% If your thesis has different "Parts", use commands such as the following:
 %\part{First Part\label{part:one}}%
-\input{chap1}
 \chapter{Statement of problem\label{chap:one}}
 
 In this chapter, \ldots
@@ -322,6 +321,23 @@ In the previous step, we computed the upward equivalent density for each leaf bo
 \mbox{Discretized M2M: }&M_n^B\phi^{B,u}_n=M_n^A\phi^{A,u}_n
 \end{align}
 where $M_n^A$ is the matrix of kernel evaluations of pairs of discretization points on the upward check surface of box $B$ and the upward equivalent surface of box $A$, and $M_n^B$ is the matrix of kernel evaluations of pairs of discretization points on the upward check surface of box $B$ and the upward equivalent surface of box $B$. Figure 4 gives a graphical representation of this step.
+
+So the M2M translation operator is:
+
+\begin{align}
+T^{M2M} &= (M_n^B)^{-1}M_n^A\\
+&= \begin{pmatrix}
+  K(\mathbf{x_1},\mathbf{y_1}) & \cdots & K(\mathbf{x_1},\mathbf{y_m})  \\
+  \vdots  & \ddots & \vdots  \\
+  K(\mathbf{x_m},\mathbf{y_1}) & \cdots & K(\mathbf{x_m},\mathbf{y_m}) 
+ \end{pmatrix}^{-1}\begin{pmatrix}
+  K(\mathbf{x_1},\mathbf{y_1}) & \cdots & K(\mathbf{x_1},\mathbf{y_m})  \\
+  \vdots  & \ddots & \vdots  \\
+  K(\mathbf{x_m},\mathbf{y_1}) & \cdots & K(\mathbf{x_m},\mathbf{y_m}) 
+ \end{pmatrix}
+\end{align}
+
+
 \begin{figure}[!ht]
 \begin{center}
 %\includegraphics[scale=0.5]{M2M-curve}

@@ -18,23 +18,7 @@
 \contentsline {subsubsection}{\numberline {1.4.2.3}Discretization details}{10}
 \contentsline {subsubsection}{\numberline {1.4.2.4}Non-uniform translation operators}{11}
 \contentsline {section}{\numberline {1.5}Implementation and Future Work}{12}
-\contentsline {chapter}{Bibliography}{13}
-\contentsline {section}{\numberline {1.6}Another section}{14}
-\contentsline {chapter}{\numberline {2}Statement of problem}{15}
-\contentsline {section}{\numberline {2.1}Translation invariance}{15}
-\contentsline {section}{\numberline {2.2}Contribution of this project}{17}
-\contentsline {section}{\numberline {2.3}Background}{17}
-\contentsline {subsection}{\numberline {2.3.1}KIFMM}{17}
-\contentsline {subsection}{\numberline {2.3.2}Fourier representation of 3D integral equations}{18}
-\contentsline {section}{\numberline {2.4}Application of the KIFMM}{20}
-\contentsline {subsection}{\numberline {2.4.1}Single-layer 3D Laplace kernel}{20}
-\contentsline {subsection}{\numberline {2.4.2}Full algorithm}{21}
-\contentsline {subsubsection}{\numberline {2.4.2.1}Equivalent densities}{22}
-\contentsline {subsubsection}{\numberline {2.4.2.2}Translation Operators}{23}
-\contentsline {subsubsection}{\numberline {2.4.2.3}Discretization details}{26}
-\contentsline {subsubsection}{\numberline {2.4.2.4}Non-uniform translation operators}{27}
-\contentsline {section}{\numberline {2.5}Implementation and Future Work}{28}
-\contentsline {chapter}{Bibliography}{29}
-\contentsline {section}{\numberline {2.6}Another section}{30}
-\contentsline {chapter}{\numberline {A}One more comment}{31}
-\contentsline {chapter}{Bibliography}{32}
+\contentsline {chapter}{Bibliography}{14}
+\contentsline {section}{\numberline {1.6}Another section}{15}
+\contentsline {chapter}{\numberline {A}One more comment}{16}
+\contentsline {chapter}{Bibliography}{17}

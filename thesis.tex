@@ -155,7 +155,27 @@
 
 In this chapter, \ldots
 
-\section{Translation invariance\label{sec:hypothesis}}
+\section{Background\label{sec:hypothesis}}
+
+Section 1 is devoted to the FMM
+
+Section 1a is devoted to FMM-accelereated fast solvers
+
+Section 2 is devoted to the KIFMM
+
+Section 3 KIFMM with modal green's functions
+
+bbFMM with modal green's functions
+
+Electromagnetic scattering by a body of revolution is a significant problem with radar, geophysical exploration, and acoustics applications.
+
+reduce the problem from three dimensions to a series of problems in two dimensions.
+
+efficient evaluation of modal green's function was explored by Abdelmageed (see equation $39$), and others. These could be implemented to actually compute the kernel at different Chebyshev nodes.
+
+We are, however, concerned not only with the efficient evaluation of these analytic expansions, but also the fast evaluation of their sums.
+
+The goal of this project is to formulate translation operators for a fast multipole method for use with modal kernels.
 
 In this project, we work in three-cylindrical coordinates $(r,\theta,z)$ such that a point in Cartesian coordinates $(x,y,z)$ is represented by:
 
@@ -163,9 +183,9 @@ In this project, we work in three-cylindrical coordinates $(r,\theta,z)$ such th
 r &= \sqrt{x^2+y^2}\\
 \theta &=   \begin{cases}
     0 & \mbox{if } x = 0 \mbox{ and } y = 0\\
-    \arcsin(\frac{y}{\rho}) & \mbox{if } x \geq 0 \\	
+    \arcsin(\frac{y}{r}) & \mbox{if } x \geq 0 \\	
     \arctan(\frac{y}{x}) & \mbox{if } x > 0 \\	
-    -\arcsin(\frac{y}{\rho}) + \pi & \mbox{if } x < 0
+    -\arcsin(\frac{y}{r}) + \pi & \mbox{if } x < 0
   \end{cases}\\
 z &= z
 \end{align}
@@ -175,24 +195,57 @@ A kernel is called translation invariant if for two points $(r,\theta,z)$ and $(
 K(r,\theta,z,r',\theta',z')=K(r-r',\theta-\theta',z-z')
 \end{align}
 
-For a Fredholm integral equation of the first kind
-
 \begin{align}
-\sqrt{2\pi}\int_\Gamma
+K(\mathbf{x},\mathbf{x'})=\sum_{n\in\mathbb{Z}} \frac{e^{in(\theta-\theta')}}{\sqrt{2\pi}}s_n(r,z,r',z')
 \end{align}
 
-Translation operators translate the density computed for one box to another box in the computational domain. Computing every translation operator in the entire computational domain would be extremely expensive. Consider one of the original uses of the FMM, computing pairwise forces between stars and planets in space, and this is clear.
+for $\mathbf{x}=(r,z,\theta)$ and $\mathbf{x'}=(r',z',\theta')$, where
+
+\begin{align}
+s_n(r,z,r',z')=\frac{1}{\sqrt{8\pi^3 rr'}}\mathbf{Q}_{n-\frac{1}{2}}\bigg(\frac{r^2+(r')^2+(z-z')^2}{2rr'}\bigg)
+\end{align}
+
+In particular, we are looking at the Fourier modes of the single-layer three-dimensional Laplace kernel:
+
+\begin{align}
+\frac{1}{4\pi |\mathbf{x}-\mathbf{x'}|}=\sum_{n\in\mathbb{Z}} \frac{e^{in(\theta-\theta')}}{\sqrt{2\pi}} k_n(r,z,r',z')
+\end{align}
+
+This is specifically for particles or charges governed by an interior or exterior Dirichlet problem with Laplace's equation. On a three-dimensional surface $\Gamma$,
+
+\begin{align}
+\Delta u &= 0 \mbox{ in }\Omega\\
+u &= f \mbox{ on }\Gamma
+\end{align}
+
+We're interested in a more general class of density distributions.
+
+This tactic of reducing a three-dimensional algorithm to a series of two dimensional algorithms is explained at length by Martinsson, Young, and Hao.
+
+Translation operators translate weights or densities in one box to another box in the computational domain. Computing every translation operator in the entire computational domain would be extremely expensive. Consider one of the original uses of the FMM, computing pairwise forces between stars and planets in space, and this is clear.
 
 If a kernel is translation invariant, then translation operators will only differ based on relative position and level in the hierarchical tree. This is because the kernels used there only depended the relative difference between coordinate values, e.g. $(r-r')$.
 
+Translation operators can be computed without any knowledge of the sources or targets, so they are a true pre-computation. The only thing we'll need is a computational domain. We choose arbitrarily the box $[-1,1]\times[-1,1]$, although operators can be calculated for any rectangle.
 
+There are three types of translation operators. The multipole-to-multipole (M2M) operator translates densities in a box to densities in the parent box. The multipole-to-local (M2L) operator translates densities in a box to another box on the same level in the hierarchical tree that divides the computational domain. The local-to-local (L2L) operator translates densities in a box to densities in a child box.
 
-\title{An alternate KIFMM algorithm for density distributions\\on axisymmetric surfaces of revolution}
-\date{December 14, 2015}
-\author{Victor Churchill}
-\clearpage
-\maketitle
-\thispagestyle{empty}
+Translation operators are the backbone of a fast multipole method.
+
+These translation operators depend on the kernel of the partial differential equation that governs the relationship between source and target particles.
+
+The fast multipole method (FMM) has been applied to many different kernels. It has also been applied to many different density distributions. There are different flavors of the FMM to deal with difficult kernels for which there aren't workable analytic expansions. These so-called kernel-independent FMMs get around this issue. The original KIFMM uses a continuous distribution of an equivalent density on a surface enclosing a box in the hierarchical tree to represent the potential generated by sources in that box, rather than using analytic multipole expansions as in the original FMM. This allows us to construct an efficient FMM that only requires kernel evaluations. The KIFMM is also relatively easy to implement, since in general it applies to an arbitrary kernel that is the fundamental solution of some elliptic PDE. To change the kernel in the original FMM, one would need to develop analytic multipole expansions for that kernel that may be difficult to produce.
+
+The upward and downward formulation of the aforementioned equivalent densities and their translation are explained in detail in $\S3.2$ and shown in Figures 3, 4, 5, and 6.
+
+\begin{figure}[!ht]
+\begin{center}
+%\includegraphics[scale=0.9]{3dsurface}
+\end{center}
+\caption{An axisymmetric surface $\Gamma$ in 3D.}
+\end{figure}
+
+Later, Fong and Darve proposed another kernel-independent FMM, the black-box FMM (bbFMM). This approach uses 
 
 \newpage
 
@@ -203,18 +256,6 @@ The original KIFMM paper by Ying, Biros, and Zorin, explored three data sets for
 This project examines the case of a broader category of non-uniform distributions, surfaces of revolution that are rotationally symmetric with respect to the azimuthal angle, or axisymmetric, as in Figure 1. While the original 3D KIFMM may be able to handle densities distributed on surfaces of revolution, \cite{YBZ} explains that the implementation is difficult. This project proposes to work around this issue by employing the technique described in \cite{YYM} to replace the 3D integral equations required by the 3D KIFMM with their Fourier representations, sequences of 2D integral equations. In this way, we can avoid the 3D KIFMM in favor of repeatedly applying the 2D KIFMM to accelerate pairwise computations of densities distributed on an axisymmetric surfaces of revolution.
 
 \section{Background}
-
-\subsection{KIFMM}
-The kernel-independent fast multipole method uses a continuous distribution of an equivalent density on a surface enclosing a box in the hierarchical tree to represent the potential generated by sources in that box, rather than using analytic multipole expansions as in the original FMM. This allows us to construct an efficient FMM that only requires kernel evaluations. The KIFMM is also relatively easy to implement, since in general it applies to an arbitrary kernel that is the fundamental solution of some elliptic PDE. To change the kernel in the original FMM, one would need to develop analytic multipole expansions for that kernel that may be difficult to produce.
-
-The upward and downward formulation of the aforementioned equivalent densities and their translation are explained in detail in $\S3.2$ and shown in Figures 3, 4, 5, and 6.
-
-\begin{figure}[!ht]
-\begin{center}
-%\includegraphics[scale=0.9]{3dsurface}
-\end{center}
-\caption{An axisymmetric surface $\Gamma$ in 3D.}
-\end{figure}
 
 \subsection{Fourier representation of 3D integral equations}
 Our strategy to apply the KIFMM to densities distributed on axisymmetric surfaces of revolution is grounded in the fact that it is easier to solve boundary integral equations defined on curves in $\mathbb{R}^2$ than those defined on surfaces in $\mathbb{R}^3$. This section is based on results in \cite{YYM}.

@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015) (preloaded format=pdflatex 2015.5.24)  6 APR 2016 02:57
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015) (preloaded format=pdflatex 2015.5.24)  14 APR 2016 01:29
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -257,40 +257,38 @@ File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 Chapter 1.
 [2
 
-] [3] [1
-
-] [1] [2] [3] [4] [5] [6]
-Overfull \hbox (30.72632pt too wide) in paragraph at lines 322--322
+] [3] [4] [5] [6] [7] [8] [9] [10] [11] [12]
+Overfull \hbox (30.72632pt too wide) in paragraph at lines 359--359
 [] 
  []
 
-[7] [8]
-Overfull \hbox (25.6372pt too wide) in paragraph at lines 352--352
+[13]
+Overfull \hbox (25.6372pt too wide) in paragraph at lines 389--389
 [] 
  []
 
-
-Overfull \hbox (21.0958pt too wide) in paragraph at lines 366--366
+[14]
+Overfull \hbox (21.0958pt too wide) in paragraph at lines 403--403
 [] 
  []
 
-[9] [10] [11] [12] [13] (./app1.tex [14
+[15] [16] [17] [18] (./app1.tex [19
 
-] [15]
+] [20]
 Appendix A.
-) (./biblio.tex [16
+) (./biblio.tex [21
 
-]) [17
+]) [22
 
 ] (./thesis.aux) ) 
 Here is how much of TeX's memory you used:
- 2561 strings out of 493089
- 33979 string characters out of 6134842
+ 2550 strings out of 493089
+ 33823 string characters out of 6134842
  97249 words of memory out of 5000000
- 5982 multiletter control sequences out of 15000+600000
- 13977 words of font info for 53 fonts, out of 8000000 for 9000
+ 5971 multiletter control sequences out of 15000+600000
+ 11377 words of font info for 42 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 38i,16n,24p,918b,200s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 38i,16n,24p,988b,196s stack positions out of 5000i,500n,10000p,200000b,80000s
 </usr/local/texlive/2015/texmf-dist/fonts/type1/public/amsfon
 ts/cm/cmbx12.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1/public/amsfont
 s/cm/cmbx8.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/
@@ -298,17 +296,16 @@ cm/cmex10.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/c
 m/cmmi12.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm
 /cmmi6.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/c
 mmi8.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmr
-12.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmr17
-.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmr6.pf
-b></usr/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb><
-/usr/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></
-usr/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy6.pfb></us
-r/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb></usr/
-local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmti12.pfb></usr/l
-ocal/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/symbols/msam10.pfb></u
-sr/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb
->
-Output written on thesis.pdf (30 pages, 206628 bytes).
+12.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmr6.
+pfb></usr/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb
+></usr/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb>
+</usr/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy6.pfb></
+usr/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb></us
+r/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmti12.pfb></usr
+/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/symbols/msam10.pfb><
+/usr/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.p
+fb>
+Output written on thesis.pdf (31 pages, 199386 bytes).
 PDF statistics:
  165 PDF objects out of 1000 (max. 8388607)
  115 compressed objects within 2 object streams

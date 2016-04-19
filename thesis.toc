@@ -1,9 +1,5 @@
-\contentsline {section}{Dedication}{iii}
-\contentsline {section}{Acknowledgements}{iv}
-\contentsline {section}{Abstract}{v}
-\contentsline {section}{List of Figures}{viii}
-\contentsline {section}{List of Tables}{ix}
-\contentsline {section}{Introduction}{1}
+\contentsline {section}{List of Figures}{v}
+\contentsline {section}{List of Tables}{vi}
 \contentsline {chapter}{\numberline {1}Statement of problem}{2}
 \contentsline {section}{\numberline {1.1}Background}{2}
 \contentsline {section}{\numberline {1.2}Contribution of this project}{7}
@@ -17,7 +13,12 @@
 \contentsline {subsubsection}{\numberline {1.4.2.3}Discretization details}{16}
 \contentsline {subsubsection}{\numberline {1.4.2.4}Non-uniform translation operators}{16}
 \contentsline {section}{\numberline {1.5}Implementation and Future Work}{18}
-\contentsline {chapter}{Bibliography}{19}
-\contentsline {section}{\numberline {1.6}Another section}{20}
-\contentsline {chapter}{\numberline {A}One more comment}{21}
-\contentsline {chapter}{Bibliography}{22}
+\contentsline {chapter}{\numberline {2}Kernel-independent FMM}{19}
+\contentsline {section}{\numberline {2.1}Background}{19}
+\contentsline {chapter}{\numberline {3}Black-box FMM}{20}
+\contentsline {section}{\numberline {3.1}Background}{20}
+\contentsline {chapter}{\numberline {4}Application to Modal Green's Functions}{21}
+\contentsline {section}{\numberline {4.1}Background}{21}
+\contentsline {chapter}{\numberline {5}Numerical Results}{22}
+\contentsline {section}{\numberline {5.1}Summary}{22}
+\contentsline {chapter}{Bibliography}{23}

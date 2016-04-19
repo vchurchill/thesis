@@ -8,13 +8,13 @@
 
 %% Replace the title, name, advisor name, graduation date and dedication below with
 %% your own. Graduation months must be January, May or September.
-\newcommand{\thesistitle}{Translation Operators for Translation-Variant Modal Green's Functions in the Black Box Kernel-Independent Fast Multipole Method}
+\newcommand{\thesistitle}{Translation Operators for Modal Green's Functions}
 \newcommand{\thesisauthor}{Victor Churchill}
 \newcommand{\thesisadvisor}{Professor Michael O'Neil}
 \newcommand{\graddate}{May 2016}
 %% If you do not want a dedication, scroll down and comment out
 %% the appropriate lines in this file.
-\newcommand{\thesisdedication}{To me.}
+%\newcommand{\thesisdedication}{To me.}
 
 %% The following makes chapters and sections, but not subsections,
 %% appear in the TOC (table of contents). Increase to 2 or 3 to
@@ -58,7 +58,73 @@
 
 %% This inputs your auxiliary file with \usepackage's and \newcommand's:
 %% It is assumed that that file is called "definitions.tex".
-\input{definitions}
+%\input{definitions}
+%%
+%% Place here your \usepackage's. Some recommended packages are already included.
+%%
+
+% Graphics:
+\usepackage[final]{graphicx}
+%\usepackage{graphicx} % use this line instead of the above to suppress graphics in draft copies
+%\usepackage{graphpap} % \defines the \graphpaper command
+
+% Indent first line of each section:
+\usepackage{indentfirst}
+
+% Good AMS stuff:
+\usepackage{amsthm} % facilities for theorem-like environments
+\usepackage[tbtags]{amsmath} % a lot of good stuff!
+
+% Fonts and symbols:
+\usepackage{amsfonts}
+\usepackage{amssymb}
+
+% Formatting tools:
+%\usepackage{relsize} % relative font size selection, provides commands \textsmalle, \textlarger
+%\usepackage{xspace} % gentle spacing in macros, such as \newcommand{\acims}{\textsc{acim}s\xspace}
+
+% Page formatting utility:
+%\usepackage{geometry}
+
+%%
+%% Place here your \newcommand's and \renewcommand's. Some examples already included.
+%%
+\renewcommand{\le}{\leqslant}
+\renewcommand{\ge}{\geqslant}
+\renewcommand{\emptyset}{\ensuremath{\varnothing}}
+\newcommand{\ds}{\displaystyle}
+\newcommand{\R}{\ensuremath{\mathbb{R}}}
+\newcommand{\Q}{\ensuremath{\mathbb{Q}}}
+\newcommand{\Z}{\ensuremath{\mathbb{Z}}}
+\newcommand{\N}{\ensuremath{\mathbb{N}}}
+\newcommand{\T}{\ensuremath{\mathbb{T}}}
+\newcommand{\eps}{\varepsilon}
+\newcommand{\closure}[1]{\ensuremath{\overline{#1}}}
+%\newcommand{\acim}{\textsc{acim}\xspace}
+%\newcommand{\acims}{\textsc{acim}s\xspace}
+
+%%
+%% Place here your \newtheorem's:
+%%
+
+%% Some examples commented out below. Create your own or use these...
+%%%%%%%%%\swapnumbers % this makes the numbers appear before the statement name.
+%\theoremstyle{plain}
+%\newtheorem{thm}{Theorem}[chapter]
+%\newtheorem{prop}[thm]{Proposition}
+%\newtheorem{lemma}[thm]{Lemma}
+%\newtheorem{cor}[thm]{Corollary}
+
+%\theoremstyle{definition}
+%\newtheorem{define}{Definition}[chapter]
+
+%\theoremstyle{remark}
+%\newtheorem*{rmk*}{Remark}
+%\newtheorem*{rmks*}{Remarks}
+
+%% This defines the "proo" environment, which is the same as proof, but
+%% with "Proof:" instead of "Proof.". I prefer the former.
+%\newenvironment{proo}{\begin{proof}[Proof:]}{\end{proof}}
 
 %% Cross-referencing utilities. Use one or the other--whichever you prefer--
 %% but comment out both lines for final version.
@@ -101,31 +167,33 @@
 
 \noindent\makebox[\textwidth]{\hfill\makebox[2.5in]{\hrulefill}}\\
 \makebox[\textwidth]{\hfill\makebox[2.5in]{\hfill\thesisadvisor\hfill}}
-\newpage
+%\newpage
 %%%%%%%%%%%%% Blank page %%%%%%%%%%%%%%%%%%
 \thispagestyle{empty}
 \vspace*{0in}
-\newpage
+%\newpage
 
 %%%%%%%%%%%%%% Dedication %%%%%%%%%%%%%%%%%
 %% Comment out the following lines if you do not want to dedicate
 %% this to anyone...
-\vspace*{\fill}
-\begin{center}
-  \thesisdedication\addcontentsline{toc}{section}{Dedication}
-\end{center}
-\vfill
-\newpage
+%\vspace*{\fill}
+%\begin{center}
+%  \thesisdedication\addcontentsline{toc}{section}{Dedication}
+%\end{center}
+%\vfill
+%\newpage
 %%%%%%%%%%%%%% Acknowledgements %%%%%%%%%%%%
 %% Comment out the following lines if you do not want to acknowledge
 %% anyone's help...
-\section*{Acknowledgements}\addcontentsline{toc}{section}{Acknowledgements}
-\input{acknowledge}
-\newpage
+%\section*{Acknowledgements}\addcontentsline{toc}{section}{Acknowledgements}
+%\input{acknowledge}
+%I would like to acknowledge the effort put into this thesis by myself. This work could not have been done without me.
+%\newpage
 %%%% Abstract %%%%%%%%%%%%%%%%%%
-\section*{Abstract}\addcontentsline{toc}{section}{Abstract}
-\input{abstract}
-\newpage
+%\section*{Abstract}\addcontentsline{toc}{section}{Abstract}
+%\input{abstract}
+%Translation operators for various flavors of the Fast Multipole Method (FMM) are a minimal pre-computation for translation-invariant Green's functions and modal Green's functions. This is due to the fact that for these functions many translation operators on various levels the computational domain are the same, and so need not be repeatedly computed. However, for a translation-variant Green's function or modal Green's function this is not immediately clear. Until now one may have needed to compute all possible translation operators between all boxes in the computational domain. This thesis shows that lightening the pre-computational load of the translation operators for the FMM is possible for translation-variant modal Green's functions. Specifically we examine the application to the translation operators of the three-dimensional kernel-independent FMM for Laplace's equation.
+%\newpage
 %%%% Table of Contents %%%%%%%%%%%%
 \tableofcontents
 
@@ -147,31 +215,34 @@
 \pagenumbering{arabic} % switches page numbering to arabic: 1, 2, 3, etc.
 %% Introduction. If your thesis has no introduction, or chapter 1 is
 %% meant to be the introduction, then comment out the lines below.
-\section*{Introduction}\addcontentsline{toc}{section}{Introduction}
-\input{intro}
+%\section*{Introduction}\addcontentsline{toc}{section}{Introduction}
+%\input{intro}
+%This thesis is about translation operators.
+
+%In chapter~\ref{chap:one}
 %% If your thesis has different "Parts", use commands such as the following:
 %\part{First Part\label{part:one}}%
-\chapter{Statement of problem\label{chap:one}}
-
-In this chapter, \ldots
-
-\section{Background\label{sec:hypothesis}}
 
 I should do multiple computational domains with multiple numbers of levels and time them for comparison.
 
-Section 1 is devoted to the FMM
-
-Section 1a is devoted to FMM-accelereated fast solvers
+Section 1 is devoted to the FMM and FMM-accelerated direct fast solvers
 
 Section 2 is devoted to the KIFMM
 
 Section 3 KIFMM with modal green's functions (Martinsson, Young, Hao)
 Its application to our problem is difficult because the pre-computation will be extremely expensive. There isn't any constant proportionality between the operators and so each operator will have to be computed individually which would be O().
 
-
 Section 4 bbFMM review
 
 Section 5 bbFMM applied to 
+
+
+% CHAPTER 1!
+\chapter{Statement of problem\label{chap:one}}
+
+In this chapter, \ldots
+
+\section{Background\label{sec:hypothesis}}
 
 Electromagnetic scattering by a body of revolution is a significant problem with radar, geophysical exploration, and acoustics applications.
 
@@ -202,19 +273,17 @@ K(r,\theta,z,r',\theta',z')=K(r-r',\theta-\theta',z-z')
 \end{align}
 
 \begin{align}
-K(\mathbf{x},\mathbf{x'})=\sum_{n\in\mathbb{Z}} \frac{e^{in(\theta-\theta')}}{\sqrt{2\pi}}s_n(r,z,r',z')
+K(\mathbf{x},\mathbf{x'})=\sum_{n\in\mathbb{Z}} \frac{e^{in(\theta-\theta')}}{\sqrt{2\pi}}k_n(r,z,r',z')
 \end{align}
 
-for $\mathbf{x}=(r,z,\theta)$ and $\mathbf{x'}=(r',z',\theta')$, where
+for $\mathbf{x}=(r,z,\theta)$ and $\mathbf{x'}=(r',z',\theta')$, where the $k_n$ functions are called Fourier modes. When a kernel is as above, a function of $(\theta-\theta',r,z,r',z')$, it is called rotationally symmetric, or axisymmetric. In particular, we are looking at the Fourier modes of the single-layer three-dimensional Laplace kernel:
 
+\begin{align}
+\frac{1}{4\pi |\mathbf{x}-\mathbf{x'}|}=\sum_{n\in\mathbb{Z}} \frac{e^{in(\theta-\theta')}}{\sqrt{2\pi}} s_n(r,z,r',z')
+\end{align}
+with: 
 \begin{align}
 s_n(r,z,r',z')=\frac{1}{\sqrt{8\pi^3 rr'}}\mathbf{Q}_{n-\frac{1}{2}}\bigg(\frac{r^2+(r')^2+(z-z')^2}{2rr'}\bigg)
-\end{align}
-
-In particular, we are looking at the Fourier modes of the single-layer three-dimensional Laplace kernel:
-
-\begin{align}
-\frac{1}{4\pi |\mathbf{x}-\mathbf{x'}|}=\sum_{n\in\mathbb{Z}} \frac{e^{in(\theta-\theta')}}{\sqrt{2\pi}} k_n(r,z,r',z')
 \end{align}
 
 This is specifically for particles or charges governed by an interior or exterior Dirichlet problem with Laplace's equation. On a three-dimensional surface $\Gamma$,
@@ -459,11 +528,54 @@ Other implementation work that needs to be done is testing various kernels, surf
 
 Lastly, once the algorithm is completely accelerated and applicable to different kernels, performing error and complexity analysis will be an important part of its evaluation as a fast method.
 
+% CHAPTER 2!
+\chapter{Kernel-independent FMM\label{chap:two}}
+
+In this chapter, \ldots
+
+\section{Background\label{sec:hypothesis}}
+
+
+% CHAPTER 3!
+\chapter{Black-box FMM\label{chap:three}}
+
+In this chapter, \ldots
+
+\section{Background\label{sec:hypothesis}}
+
+
+% CHAPTER 4!
+\chapter{Application to Modal Green's Functions\label{chap:four}}
+
+In this chapter, \ldots
+
+\section{Background\label{sec:hypothesis}}
+
+
+% CHAPTER 5!
+\chapter{Numerical Results\label{chap:five}}
+
+In this chapter, we provide numerical results and graphs for several cases to demonstrate the validity of our computational complexity. Also to demonstrate the raw speed of the computation.
+
+\section{Summary\label{sec:numerics}}
+
+In particular, we fix the root level of the computational domain as the box $[-1,1]\times [-1,1]$ in two-dimensional $(r,z)$-space, and vary the number of levels in the computational domain, and the number of Chebyshev nodes in each box. Note that the number of Chebyshev nodes is the same for every box, regardless of size or level. Note also that we have just provided reasoning for why we're able to simply consider one root level of the computational domain. We'll have the same number of operators to compute, and so the computational complexity doesn't depend on the size or location of this root box.
+
+% CHAPTER 6!
+\chapter{Future Work\label{chap:six}}
+
+In this chapter, we discuss work that needs to be done. Ultimately, the translation operators are the core of any kernel-independent fast multipole method such that given a density distribution, 
+
+\section{Background\label{sec:hypothesis}}
+
+% BIBLIOGRAPHY!
 \begin{thebibliography}{99}\addcontentsline{toc}{chapter}{Bibliography}
 
 \bibitem{CGR} Cheng, H., Greengard, L., Rokhlin, V., \emph{A Fast Adaptive Multipole Algorithm in Three Dimensions}. Journal of Computational Physics, 155, (1999), 468-498.
 
-%\bibitem{HMY} Hao, S., Martinsson, P.G., Young, P., \emph{An efficient and highly accurate solver for multi-body acoustic scattering problems involving rotationally symmetric scatterers}. Computers and Mathematics with Applications, 69, (2015), 304-318.
+\bibitem{FD} Fong, W., Darve, E., \emph{A black-box fast multipole method}. Journal of Computational Physics.
+
+\bibitem{HMY} Hao, S., Martinsson, P.G., Young, P., \emph{An efficient and highly accurate solver for multi-body acoustic scattering problems involving rotationally symmetric scatterers}. Computers and Mathematics with Applications, 69, (2015), 304-318.
 
 \bibitem{MV} Martinsson, P.G., Rokhlin, V., \emph{An accelerated kernel-independent fast multipole method in one dimension}. SIAM Journal of Scientific Computing, Vol. 29, No. 3, (2007), 1160-1178.
 
@@ -473,35 +585,6 @@ Lastly, once the algorithm is completely accelerated and applicable to different
 
 \end{thebibliography}
 
-
-Blah, blah, blah. There is nothing interesting in
-figure~\ref{fig:afigure}.
-\begin{figure}[htb]
-  \begin{center}
-    \emph{This statement is false.}
-  \end{center}%
-\caption[This alternate caption appears in the list of figures.]{This is the
-caption that appears under the figure. It may be quite long---you wouldn't want
-such a long caption to appear in the ``list of figures''.}
-\label{fig:afigure}
-\end{figure}
-
-More blah, blah. There is nothing interesting about
-table~\ref{tab:atable} either.
-\begin{table}[htb]
-\caption[Strange rules.]{For some reason unfamiliar to me,
-typesetting rules require one to place captions above tables,
-but below figures. Go figure.}\label{tab:atable}
-  \begin{center}
-    \framebox{You could put a table here. I won't.}
-  \end{center}
-\end{table}
-
-\section{Another section\label{sec:two}}
-
-Notice that the fist paragraph is indented. There's a package
-to do that automatically. Blah, blah. Blah, blah, blah, blah.
-
 %\input{chap2} % further chapters -- change file names to meaningful things...
 %\input{chap3}
 %\part{Second Part\label{part:two}}%
@@ -510,13 +593,20 @@ to do that automatically. Blah, blah. Blah, blah, blah, blah.
 %\input{chap6}
 %%%%% Appendices start %%%%%%%%%%%%%%%%
 %% Comment out the following line if your thesis has no appendix
-\appendix
-\input{app1}
+%\appendix
+%\input{app1}
+%\chapter{One more comment\label{chap:append}}
+
+%This is an appendix.
 %% Note: If your thesis has more than one appendix, NYU requires a "list of
 %% appendices" page before the body of the thesis. I don't provide the tools
 %% to create that here, so you're on your own for that one... Sorry.
 %\input{app2}
 %%%% Input bibliography file %%%%%%%%%%%%%%%
-\input{biblio}
-
+%\input{biblio}
+%\begin{thebibliography}{99}\addcontentsline{toc}{chapter}{Bibliography}
+%\bibitem{JBC91}J.~B.~Conway, \emph{Functions of One Complex
+%    Variable~I}. Second edition. Springer-Verlag, Graduate
+%    Texts in Mathematics~\textbf{11}, 1991.
+%\end{thebibliography}
 \end{document}

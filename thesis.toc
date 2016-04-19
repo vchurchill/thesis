@@ -16,9 +16,13 @@
 \contentsline {chapter}{\numberline {2}Kernel-independent FMM}{19}
 \contentsline {section}{\numberline {2.1}Background}{19}
 \contentsline {chapter}{\numberline {3}Black-box FMM}{20}
-\contentsline {section}{\numberline {3.1}Background}{20}
+\contentsline {section}{\numberline {3.1}Motivation}{20}
 \contentsline {chapter}{\numberline {4}Application to Modal Green's Functions}{21}
-\contentsline {section}{\numberline {4.1}Background}{21}
+\contentsline {section}{\numberline {4.1}M2M}{21}
+\contentsline {section}{\numberline {4.2}M2L}{21}
+\contentsline {section}{\numberline {4.3}L2L}{21}
 \contentsline {chapter}{\numberline {5}Numerical Results}{22}
 \contentsline {section}{\numberline {5.1}Summary}{22}
-\contentsline {chapter}{Bibliography}{23}
+\contentsline {chapter}{\numberline {6}Future Work}{23}
+\contentsline {section}{\numberline {6.1}Background}{23}
+\contentsline {chapter}{Bibliography}{24}

@@ -539,9 +539,13 @@ In this chapter, \ldots
 % CHAPTER 3!
 \chapter{Black-box FMM\label{chap:three}}
 
-In this chapter, \ldots
+In this chapter, we discuss the black-box FMM.
 
-\section{Background\label{sec:hypothesis}}
+\section{Motivation\label{sec:motivation}}
+
+The bbFMM is ideal for complicated kernels, perhaps without translation invariance, or maybe having no explicit analytic form or only defined at a certain number of points. Maybe it has a very complicated analytic form that isn't easy to work with in the standard FMM or KIFMM. The bbFMM only requires the evaluation of the kernel at specific points.
+
+These points are Chebyshev nodes, which are the roots of $T(x)=$. The formula for nodes on $[a,b]$ is: $x=$. This is just in one dimension, points on an interval. For two dimensions, consider two axes $r$ and $z$, and the Chebyshev nodes on each interval. The nodes in the box these intervals create are all of the possible $(r,z)$ pairs of the nodes in each respective interval.
 
 
 % CHAPTER 4!
@@ -549,8 +553,11 @@ In this chapter, \ldots
 
 In this chapter, \ldots
 
-\section{Background\label{sec:hypothesis}}
+\section{M2M\label{sec:m2m}}
 
+\section{M2L\label{sec:m2l}}
+
+\section{L2L\label{sec:l2l}}
 
 % CHAPTER 5!
 \chapter{Numerical Results\label{chap:five}}
@@ -564,7 +571,9 @@ In particular, we fix the root level of the computational domain as the box $[-1
 % CHAPTER 6!
 \chapter{Future Work\label{chap:six}}
 
-In this chapter, we discuss work that needs to be done. Ultimately, the translation operators are the core of any kernel-independent fast multipole method such that given a density distribution, 
+In this chapter, we discuss work that needs to be done. Ultimately, the translation operators are the core of any kernel-independent fast multipole method. They will work with any density distribution, so once that is specified, we can add a hierarchical tree and complete the algorithm.
+
+One potential problem is with the evaluation of $k_n$ at certain Chebyshev nodes with either $r$-value equal to $0$. This will be undefined since $\chi = \frac{r^2+(r')^2+(z-z')^2}{2rr'}$. For example, this would occur if we have the box $[-a,a]\times[-a,a]$, such that a node is the origin. However, perhaps only the right half-place need be considered because if we're considering axisymmetric three-dimensional distributions then in two dimensions, we are considering a generative curve only in the right half-plane.
 
 \section{Background\label{sec:hypothesis}}
 

@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015) (preloaded format=pdflatex 2015.5.24)  19 APR 2016 12:56
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015) (preloaded format=pdflatex 2015.5.24)  20 APR 2016 11:09
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -257,46 +257,46 @@ File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 
  [6
 
-] [1]
+] [1] [2]
 Chapter 1.
-[2
+[3
 
-] [3] [4] [5] [6] [7] [8] [9] [10] [11] [12]
-Overfull \hbox (30.72632pt too wide) in paragraph at lines 438--438
+] [4] [5] [6] [7] [8] [9] [10] [11] [12]
+Overfull \hbox (30.72632pt too wide) in paragraph at lines 436--436
 [] 
  []
 
-[13]
-Overfull \hbox (25.6372pt too wide) in paragraph at lines 468--468
+[13] [14]
+Overfull \hbox (25.6372pt too wide) in paragraph at lines 466--466
 [] 
  []
 
-[14]
-Overfull \hbox (21.0958pt too wide) in paragraph at lines 482--482
+
+Overfull \hbox (21.0958pt too wide) in paragraph at lines 480--480
 [] 
  []
 
-[15] [16] [17] [18]
+[15] [16] [17] [18] [19]
 Chapter 2.
-[19
-
-]
-Chapter 3.
 [20
 
-]
+] [21]
+Chapter 3.
+[22
+
+] [23]
 Chapter 4.
-[21
+[24
 
 ]
 Chapter 5.
-[22
+[25
 
 ]
 Chapter 6.
-[23
+[26
 
-] [24
+] [27
 
 ] (./thesis.aux)
 
@@ -306,7 +306,7 @@ LaTeX Warning: There were multiply-defined labels.
 Here is how much of TeX's memory you used:
  2539 strings out of 493089
  33686 string characters out of 6134842
- 97240 words of memory out of 5000000
+ 96240 words of memory out of 5000000
  5977 multiletter control sequences out of 15000+600000
  11377 words of font info for 42 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
@@ -326,10 +326,10 @@ e/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb></usr/local/texlive/
 2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmti12.pfb></usr/local/texlive/2
 015/texmf-dist/fonts/type1/public/amsfonts/symbols/msam10.pfb></usr/local/texli
 ve/2015/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb>
-Output written on thesis.pdf (30 pages, 201360 bytes).
+Output written on thesis.pdf (33 pages, 203343 bytes).
 PDF statistics:
- 161 PDF objects out of 1000 (max. 8388607)
- 112 compressed objects within 2 object streams
+ 171 PDF objects out of 1000 (max. 8388607)
+ 119 compressed objects within 2 object streams
  0 named destinations out of 1000 (max. 500000)
  1 words of extra memory for PDF output out of 10000 (max. 10000000)
 

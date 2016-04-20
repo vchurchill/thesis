@@ -236,6 +236,12 @@ Section 4 bbFMM review
 
 Section 5 bbFMM applied to 
 
+Literature review of kernel-independent fast methods. These methods can be separated into two categories. First, the not so kernel-independent methods which require that the kernel is the Green's function for some elliptic partial differential equation. These methods use the fact that the kernel satisfies a PDE. The most well-known method of this type is the so-called kernel-independent FMM, which was proposed by Ying, Biros, and Zorin in 2004. Second are methods which work with any smooth kernel, for example not a function of $|x-y|$. The most well-known method of this type is the black-box FMM, proposed by Fong and Darve in 2009.
+
+In the first type of method, we want to use the properties of the PDE to construct translation operators. Consider an exterior Dirichlet problem. There are three approaches we can use to represent the potential in the far-field: 1) use Green's third identity -- differential equations, 2) use integral equations, or 3) create equivalent densities and potentials. 3) is the choice of YBZ, and further detail of the construction of these operators is explored below. Essentially, an algorithm of this type depends on the source to multipole translation, and choice of a discretization scheme.
+
+SECTION 6 LINEAR ALGEBRA, SVD, ID, RECURSIVE SKELETONIZATION
+
 
 % CHAPTER 1!
 \chapter{Statement of problem\label{chap:one}}
@@ -320,15 +326,7 @@ The upward and downward formulation of the aforementioned equivalent densities a
 \caption{An axisymmetric surface $\Gamma$ in 3D.}
 \end{figure}
 
-Later, Fong and Darve proposed another kernel-independent FMM, the black-box FMM (bbFMM). This approach uses 
-
 \newpage
-
-\section{Contribution of this project}
-
-The original KIFMM paper by Ying, Biros, and Zorin, explored three data sets for the 3D case: densities distributed on the unit sphere, densities distributed uniformly on the unit cube, and densities distributed at the eight corners of the unit cube.
-
-This project examines the case of a broader category of non-uniform distributions, surfaces of revolution that are rotationally symmetric with respect to the azimuthal angle, or axisymmetric, as in Figure 1. While the original 3D KIFMM may be able to handle densities distributed on surfaces of revolution, \cite{YBZ} explains that the implementation is difficult. This project proposes to work around this issue by employing the technique described in \cite{YYM} to replace the 3D integral equations required by the 3D KIFMM with their Fourier representations, sequences of 2D integral equations. In this way, we can avoid the 3D KIFMM in favor of repeatedly applying the 2D KIFMM to accelerate pairwise computations of densities distributed on an axisymmetric surfaces of revolution.
 
 \section{Background}
 
@@ -531,7 +529,12 @@ Lastly, once the algorithm is completely accelerated and applicable to different
 % CHAPTER 2!
 \chapter{Kernel-independent FMM\label{chap:two}}
 
-In this chapter, \ldots
+KIFMM with modal green's functions (Martinsson, Young, Hao)
+Its application to our problem is difficult because the pre-computation will be extremely expensive. There isn't any constant proportionality between the operators and so each operator will have to be computed individually which would be O().
+
+The original KIFMM paper by Ying, Biros, and Zorin, explored three data sets for the 3D case: densities distributed on the unit sphere, densities distributed uniformly on the unit cube, and densities distributed at the eight corners of the unit cube.
+
+This project examines the case of a different category of non-uniform distributions, surfaces of revolution that are rotationally symmetric with respect to the azimuthal angle, or axisymmetric, as in Figure 1. While the original 3D KIFMM may be able to handle densities distributed on surfaces of revolution, \cite{YBZ} explains that the implementation is difficult. This project proposes to work around this issue by employing the technique described in \cite{YYM} to replace the 3D integral equations required by the 3D KIFMM with their Fourier representations, sequences of 2D integral equations. In this way, we can avoid the 3D KIFMM in favor of repeatedly applying the 2D KIFMM to accelerate pairwise computations of densities distributed on an axisymmetric surfaces of revolution.
 
 \section{Background\label{sec:hypothesis}}
 
@@ -539,11 +542,17 @@ In this chapter, \ldots
 % CHAPTER 3!
 \chapter{Black-box FMM\label{chap:three}}
 
+Later, Fong and Darve proposed another kernel-independent FMM, the black-box FMM (bbFMM). This approach uses 
+
 In this chapter, we discuss the black-box FMM.
 
 \section{Motivation\label{sec:motivation}}
 
 The bbFMM is ideal for complicated kernels, perhaps without translation invariance, or maybe having no explicit analytic form or only defined at a certain number of points. Maybe it has a very complicated analytic form that isn't easy to work with in the standard FMM or KIFMM. The bbFMM only requires the evaluation of the kernel at specific points.
+
+Another advantage that is of direct consequence to this project is the small pre-computation for large systems and use of the minimal number of coefficients to represent the far field.
+
+This method combines the methods of SVD compression and Chebyshev interpolation.
 
 These points are Chebyshev nodes, which are the roots of $T(x)=$. The formula for nodes on $[a,b]$ is: $x=$. This is just in one dimension, points on an interval. For two dimensions, consider two axes $r$ and $z$, and the Chebyshev nodes on each interval. The nodes in the box these intervals create are all of the possible $(r,z)$ pairs of the nodes in each respective interval.
 

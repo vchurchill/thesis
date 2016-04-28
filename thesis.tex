@@ -248,8 +248,6 @@ SECTION 6 LINEAR ALGEBRA, SVD, ID, RECURSIVE SKELETONIZATION
 
 In this chapter, \ldots
 
-\section{Background\label{sec:hypothesis}}
-
 Electromagnetic scattering by a body of revolution is a significant problem with radar, geophysical exploration, and acoustics applications.
 
 reduce the problem from three dimensions to a series of problems in two dimensions.
@@ -536,7 +534,7 @@ The original KIFMM paper by Ying, Biros, and Zorin, explored three data sets for
 
 This project examines the case of a different category of non-uniform distributions, surfaces of revolution that are rotationally symmetric with respect to the azimuthal angle, or axisymmetric, as in Figure 1. While the original 3D KIFMM may be able to handle densities distributed on surfaces of revolution, \cite{YBZ} explains that the implementation is difficult. This project proposes to work around this issue by employing the technique described in \cite{YYM} to replace the 3D integral equations required by the 3D KIFMM with their Fourier representations, sequences of 2D integral equations. In this way, we can avoid the 3D KIFMM in favor of repeatedly applying the 2D KIFMM to accelerate pairwise computations of densities distributed on an axisymmetric surfaces of revolution.
 
-\section{Background\label{sec:hypothesis}}
+\section{Background\label{ }}
 
 
 % CHAPTER 3!
@@ -584,7 +582,49 @@ In this chapter, we discuss work that needs to be done. Ultimately, the translat
 
 One potential problem is with the evaluation of $k_n$ at certain Chebyshev nodes with either $r$-value equal to $0$. This will be undefined since $\chi = \frac{r^2+(r')^2+(z-z')^2}{2rr'}$. For example, this would occur if we have the box $[-a,a]\times[-a,a]$, such that a node is the origin. However, perhaps only the right half-place need be considered because if we're considering axisymmetric three-dimensional distributions then in two dimensions, we are considering a generative curve only in the right half-plane.
 
-\section{Background\label{sec:hypothesis}}
+
+
+% CHAPTER 7!
+\chapter{Implementation\label{chap:seven}}
+
+\newpage
+
+$\mathbf{2D-M2L+L2L.py}$
+
+This file compares the actual local expansion of a box with our estimate of its local expansion. In this example we consider the computational domain to be only these boxes, with empty space (no sources) outside it.
+
+The computation of the actual local expansion is straightforward. This is the potential at a target point inside the target box due to all sources in the far field $\mathbf{F}$. For our example, this means a target point in the box $T$ due to sources in $P_1,\dots,P_7$ and $C_1,\dots,C_{27}$. For the target point $\mathbf{x_0}$ and source points $\mathbf{x_j}$ with weight $\sigma_j$, the calculation is:
+\begin{align}
+f(\mathbf{x_0}) = \sum_{\mathbf{x_j}\in \mathbf{F}} K(\mathbf{x_0},\mathbf{x_j})\sigma_j
+\end{align}
+
+Now we compute the estimated local expansion. In general in an FMM, the local expansion for a box is the sum of the multipole-to-local operations and the local-to-local operation for this box.
+
+We start by placing sources points in each box $P_1,\dots,P_7$ and $C_1,\dots,C_{27}$, and assigning each source a charge of $+1$ or $-1$. The $C$ boxes are in the interaction list of the target box. The $P$ boxes are in the interaction list of the parent box of the target box. We need to develop an equivalent density for each box $P_1,\dots,P_7$ and $C_1,\dots,C_{27}$, which is a set of $n^2$ weights at the Chebyshev nodes in each box. For each box, take $P1$ for example, this equivalent density $W$ at a node $\overline{y}_{m_1,m_2}$ is the sum over $\mathbf{y}_j$ in $P_1$ of the $R$ function at each node and each source multiplied by the charge at the source:
+\begin{align}
+W(m_1,m_2) = \sum_{y_j\in P_1} R_n(\mathbf{\overline{y}}_{m_1,m_2},\mathbf{y}_j)\sigma_j
+\end{align}
+Once these weights have been computed for every box in the far field, we compute the multipole-to-local operations for each of the boxes in the interaction list of the parent box. The sum of these over each interaction list box will be the entire local expansion for the parent, since the contribution of the local-to-local operator for this parent is $0$ as the grandparent in our case has no interaction list in the computational domain. The $M2L$ operation at each node in the parent box is such for parent box $P$ and interaction boxes $P_1,\dots,P_7$:
+\begin{align}
+g^P_{l_1,l_2} = \sum_{i=1}^7\sum_{m_1=1}^n\sum_{m_2=1}^n W_{m_1,m_2}^{P_i}K(\mathbf{\overline{x}}^P_{l_1,l_2},\mathbf{\overline{y}}^{P_i}_{m_1,m_2})
+\end{align}
+
+Now we compute the same $M2L$ operations at each node in the target box $T$:
+\begin{align}
+g^T_{l_1,l_2} = \sum_{i=1}^{27}\sum_{m_1=1}^n\sum_{m_2=1}^n W_{m_1,m_2}^{C_i}K(\mathbf{\overline{x}}^C_{l_1,l_2},\mathbf{\overline{y}}^{C_i}_{m_1,m_2})
+\end{align}
+
+Then we compute the estimated local expansion $f$ at each node in the box $T$:
+\begin{align}
+f^T_{l_1,l_2} = g^T_{l_1,l_2} + \sum_{l'_1=1}^n\sum_{l'_2=1}^n g^P_{l'_1,l'_2}R_n(\mathbf{\overline{x}}^T_{l_1,l_2},\mathbf{\overline{x}}^P_{l'_1,l'_2})
+\end{align}
+
+Finally we compute the estimated potential at the target point due to sources in the far field $\mathbf{F}$:
+\begin{align}
+f(\mathbf{x}_0) = \sum_{l_1=1}^n\sum_{l_2=1}^n f^T_{l_1,l_2} R_n(\mathbf{\overline{x}}^T_{l_1,l_2},\mathbf{x}_0)
+\end{align}
+
+All that's left to do is compare this with the above computation of the actual potential we computed naively.
 
 % BIBLIOGRAPHY!
 \begin{thebibliography}{99}\addcontentsline{toc}{chapter}{Bibliography}

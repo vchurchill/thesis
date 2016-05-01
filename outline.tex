@@ -1,0 +1,31 @@
+\documentclass[11pt, oneside]{article}   	% use "amsart" instead of "article" for AMSLaTeX format
+\usepackage{geometry}                		% See geometry.pdf to learn the layout options. There are lots.
+\geometry{letterpaper}                   		% ... or a4paper or a5paper or ... 
+%\geometry{landscape}                		% Activate for rotated page geometry
+%\usepackage[parfill]{parskip}    		% Activate to begin paragraphs with an empty line rather than an indent
+\usepackage{graphicx}				% Use pdf, png, jpg, or eps§ with pdflatex; use eps in DVI mode
+								% TeX will automatically convert eps --> pdf in pdflatex	
+\usepackage{amssymb}
+
+\title{Thesis Outline -- the problem of axisymmetric BOR}
+\date{May 4, 2016}
+
+\begin{document}
+\maketitle
+
+\section{}
+%\subsection{}
+What is an axisymmetric surface of revolution? Why are these type of densities useful and sought after?
+\section{}
+What is a modal Green's function? What is translation invariant kernel? What are the problems associated with this?
+\section{}
+Why is an analytic FMM for a modal Green's function difficult? The problem with evaluating special functions -- Bessel or Hankel functions.
+\section{}
+So we're left to kernel-independent methods.
+\section{}
+Why not use the typical KIFMM from Ying, Biros, and Zorin? Pre-computation is not optimal because of translation operators.
+\section{}
+We now consider using the black-box FMM or a Chebyshev interpolation-based scheme. Consider that for each mode n, the computation of the weights is simply a matrix
+$W_{m_1,m_2}=\sum_{j=1}^N \sigma_j R_n(\mathbf{\overline{y}}_{m_1,m_2},\mathbf{y}_j)$
+
+\end{document}  

@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015) (preloaded format=pdflatex 2015.5.24)  27 APR 2016 23:55
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015) (preloaded format=pdflatex 2015.5.24)  30 APR 2016 17:59
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -255,7 +255,25 @@ File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 Chapter 1.
 [3
 
-] [4] [5] [6] [7] [8] [9] [10] [11]
+] [4] [5] [6]
+
+LaTeX Warning: Citation `YYM' on page 7 undefined on input line 332.
+
+[7] [8]
+
+LaTeX Warning: Citation `YBZ' on page 9 undefined on input line 384.
+
+
+LaTeX Warning: Citation `YYM' on page 9 undefined on input line 389.
+
+[9]
+
+LaTeX Warning: Citation `CGR' on page 10 undefined on input line 407.
+
+
+LaTeX Warning: Citation `YBZ' on page 10 undefined on input line 407.
+
+[10] [11]
 Overfull \hbox (30.72632pt too wide) in paragraph at lines 434--434
 [] 
  []
@@ -270,8 +288,28 @@ Overfull \hbox (21.0958pt too wide) in paragraph at lines 478--478
 [] 
  []
 
-[14] [15] [16] [17] [18]
+[14]
+
+LaTeX Warning: Citation `YBZ' on page 15 undefined on input line 490.
+
+
+LaTeX Warning: Citation `YBZ' on page 15 undefined on input line 493.
+
+[15] [16]
+
+LaTeX Warning: Citation `MV' on page 17 undefined on input line 519.
+
+
+LaTeX Warning: Citation `YYM' on page 17 undefined on input line 521.
+
+[17] [18]
 Chapter 2.
+
+LaTeX Warning: Citation `YBZ' on page 19 undefined on input line 535.
+
+
+LaTeX Warning: Citation `YYM' on page 19 undefined on input line 535.
+
 [19
 
 ] [20]
@@ -296,33 +334,39 @@ Chapter 7.
 
 ] [27] [28] [29
 
-] (./thesis.aux) ) 
+] (./thesis.aux)
+
+LaTeX Warning: There were undefined references.
+
+
+LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
+
+ ) 
 Here is how much of TeX's memory you used:
  2540 strings out of 493089
  33685 string characters out of 6134842
- 97210 words of memory out of 5000000
+ 97064 words of memory out of 5000000
  5978 multiletter control sequences out of 15000+600000
  11377 words of font info for 42 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  38i,16n,24p,988b,200s stack positions out of 5000i,500n,10000p,200000b,80000s
-</usr/local/texlive/2015/texmf-dist/fonts/type1/public/amsfon
-ts/cm/cmbx12.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1/public/amsfont
-s/cm/cmbx6.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/
-cm/cmbx8.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm
-/cmex10.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/
-cmmi12.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/c
-mmi6.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmm
-i8.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12
-.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmr6.pf
-b></usr/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb><
-/usr/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></
-usr/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy6.pfb></us
-r/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb></usr/
-local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmti12.pfb></usr/l
-ocal/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/symbols/msam10.pfb></u
-sr/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb
->
-Output written on thesis.pdf (35 pages, 219020 bytes).
+</usr/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb
+></usr/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx6.pfb><
+/usr/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx8.pfb></u
+sr/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></us
+r/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi12.pfb></usr
+/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi6.pfb></usr/l
+ocal/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi8.pfb></usr/loc
+al/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/local
+/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmr6.pfb></usr/local/te
+xlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/local/texli
+ve/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/texliv
+e/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy6.pfb></usr/local/texlive/
+2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb></usr/local/texlive/20
+15/texmf-dist/fonts/type1/public/amsfonts/cm/cmti12.pfb></usr/local/texlive/201
+5/texmf-dist/fonts/type1/public/amsfonts/symbols/msam10.pfb></usr/local/texlive
+/2015/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb>
+Output written on thesis.pdf (35 pages, 219442 bytes).
 PDF statistics:
  181 PDF objects out of 1000 (max. 8388607)
  126 compressed objects within 2 object streams

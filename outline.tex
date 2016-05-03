@@ -6,26 +6,393 @@
 \usepackage{graphicx}				% Use pdf, png, jpg, or eps§ with pdflatex; use eps in DVI mode
 								% TeX will automatically convert eps --> pdf in pdflatex	
 \usepackage{amssymb}
+\usepackage[tbtags]{amsmath}
 
-\title{Thesis Outline -- the problem of axisymmetric BOR}
+\title{Outline - The problem of an FMM for axisymmetric BORs}
 \date{May 4, 2016}
 
 \begin{document}
 \maketitle
 
-\section{}
-\subsection{}
-What is an axisymmetric surface of revolution? Why are these type of densities useful and sought after?
-\section{}
-What is a modal Green's function? What is translation invariant kernel? What are the problems associated with this?
-\section{}
-Why is an analytic FMM for a modal Green's function difficult? The problem with evaluating special functions -- Bessel or Hankel functions.
-\section{}
-So we're left to kernel-independent methods.
-\section{}
-Why not use the typical KIFMM from Ying, Biros, and Zorin? Or Martinsson? Pre-computation is not optimal because of translation operators.
-\section{}
-We now consider using the black-box FMM or a Chebyshev interpolation-based scheme. Consider that for each mode n, the computation of the weights is simply a matrix
-$W_{m_1,m_2}=\sum_{j=1}^N \sigma_j R_n(\mathbf{\overline{y}}_{m_1,m_2},\mathbf{y}_j)$
+\section{Introduction}
+This project examines the problem of creating a fast multipole algorithm for an important category of non-uniform density distributions, surfaces of revolution that are rotationally symmetric with respect to the azimuthal angle, or axisymmetric.
 
-\end{document}  
+In this project, we work in three-dimensional cylindrical coordinates $(r,\theta,z)$ such that a point in Cartesian coordinates $(x,y,z)$ is represented by:
+
+\begin{align}
+r &= \sqrt{x^2+y^2}\\
+\theta &=   \begin{cases}
+    0 & \mbox{if } x = 0 \mbox{ and } y = 0\\
+    \arcsin(\frac{y}{r}) & \mbox{if } x \geq 0 \\	
+    \arctan(\frac{y}{x}) & \mbox{if } x > 0 \\	
+    -\arcsin(\frac{y}{r}) + \pi & \mbox{if } x < 0
+  \end{cases}\\
+z &= z
+\end{align}
+
+\section{Axisymmetric surfaces and statement of problem}
+
+An axisymmetric, or rotationally symmetric, surface is one that has symmetry along the $\theta$-axis. No matter what angle it is rotated, it appears the same. An axisymmetric surface $\Gamma$ is obtained by rotating a two-dimensional curve $\gamma$ about the $z$ axis. $\gamma$ is called the generating curve. In particular, $\Gamma=\gamma\times\mathbb{T}$ where $\mathbb{T}$ is the one-dimensional torus (circle) parametrized by $\theta\in(-\pi,\pi]$.
+
+Consider $N$ source points $\mathbf{y}_j$ distributed on this surface $\Gamma$, with each assigned a charge $\sigma_j$ of $\pm 1$. We want to compute the potential at some target point (in practice the sources and targets are simply the same points) represented by, in the continuous case, the integral equation
+\begin{align}
+f(\mathbf{x}_0) &= \int_\Gamma K(\mathbf{x},\mathbf{y})\sigma_jd\mathbf{y} &\mathbf{y}\in\Gamma
+\end{align}
+and in the discrete case, the sum
+\begin{align}
+f(\mathbf{x}_0) = \sum_{j=1}^N K(\mathbf{x_0},\mathbf{y}_j)\sigma_j
+\end{align}
+for $\mathbf{x}=(r,\theta,z)$ and $\mathbf{y}=(r',\theta',z')$, where $K(\mathbf{x},\mathbf{y})$ is the kernel, typically the Green's function of the partial differential equation that governs the relationship between sources and targets.
+
+Density distributions on axisymmetric surfaces such as this have many applications. For example, the problem of electromagnetic scattering by a surface of revolution has radar, geophysical exploration, and acoustics applications. This type of problem relies specifically on creating a fast algorithm for a set of densities (charges, weights, etc.) distributed on an axisymmetric surface.
+
+Our goal is to construct a fast summation method for this equation. In future sections we discuss why many schemes developed are not optimal. We look at the ways a variety of fast multipole methods attack the fast computation of potentials in this scenario.
+
+A common strategy to construct a fast method for a problem on an axisymmetric surface is to reduce the problem from three dimensions to a series of problems in two dimensions using Fourier analysis, which we discuss at length in the next section. This strategy for densities distributed on axisymmetric surfaces of revolution is grounded in the fact that it is easier to solve boundary integral equations defined on curves in $\mathbb{R}^2$ than those defined on surfaces in $\mathbb{R}^3$. We are able to do this because the nature of the surface yields $K(\mathbf{x},\mathbf{y})$ symmetric on the $\theta$-axis such that we have $K$ a function only of the difference between $\theta$ and $\theta'$:
+\begin{align}
+K(\mathbf{x},\mathbf{y})=k(\theta-\theta',r,z,r',z')
+\end{align}
+
+
+\section{Modal Green's Function}
+What is a modal Green's function? What is translation invariant kernel? What are the problems associated with this?
+
+
+\subsection{Fourier representation of 3D integral equations}
+
+Consider the Fredholm integral equation of the first kind defined on the axisymmetric surface $\Gamma$ in 3D:
+\begin{align}
+f(\mathbf{x}) &= \int_\Gamma k(\mathbf{x},\mathbf{y})\phi(\mathbf{y})d\mathbf{y} &\mathbf{x}\in\Gamma
+\end{align}
+where $k$ is a kernel function, $\phi$ is an unknown density, and $q$ is a potential. This is exactly the same type of integral equation we see in the 3D KIFMM.
+
+Due to these convenient circumstances, we can restate $(1)$ as a sequence of integral equations defined on the generating curve by performing a Fourier transform. If $\phi_n$, $q_n$, and $k_n$ are the Fourier modes of $k$, $\phi$, and $q$, then $(1)$ becomes:
+\begin{align}
+\sqrt{2\pi}\int_\gamma k_n(r,z,r',z')\phi_n(r',z')r'dl(r',z')&=q_n(r,z) &(r,z)\in\gamma, n\in\mathbb{Z}
+\end{align}
+where we have:
+\begin{align}
+q_n(r,z)&=\int_\mathbb{T}\frac{e^{-in\theta}}{\sqrt{2\pi}}q(r,z,\theta)d\theta&q(\mathbf{x})&=\sum_{n\in\mathbb{Z}}\frac{e^{in\theta}}{\sqrt{2\pi}}q_n(r,z)\\
+\phi_n(r,z)&=\int_\mathbb{T}\frac{e^{-in\theta}}{\sqrt{2\pi}}\phi(r,z,\theta)d\theta&\phi(\mathbf{x})&=\sum_{n\in\mathbb{Z}}\frac{e^{in\theta}}{\sqrt{2\pi}}\phi_n(r,z)\\
+k_n(r,z,r',z')&=\int_\mathbb{T}\frac{e^{-in\theta}}{\sqrt{2\pi}}k(r,z,r',z',\theta)d\theta&k(\mathbf{x},\mathbf{y})&=\sum_{n\in\mathbb{Z}}\frac{e^{in\theta}}{\sqrt{2\pi}}k_n(r,z,r',z')
+\end{align}
+In $\S3.2$, we'll apply this same transformation to the 3D integral equations prescribed in the 3D KIFMM, approximating with sequences of 2D integral equations that are easier to solve. For convenience, we can rewrite $(3)$ as:
+\begin{align}
+K_n\phi_n=q_n
+\end{align}
+If $K_n$ is a continuously invertible operator, we have:
+%As in [2], we use Tikhonov regularization for a stable solve.
+\begin{align}
+\phi_n=K_n^{-1}q_n
+%\phi_n=[\alpha I+K_n^TK_n]K_n^Tq_n
+\end{align}
+When we implement this strategy in combination with the KIFMM, we'll use Tikhonov regularization to stably solve $(8)$. Plugging in to $(6)$ gives the solution of the original 3D surface integral equation $(1)$:
+\begin{align}
+\phi(r,z,\theta)=\sum_{n\in\mathbb{Z}}\frac{e^{in\theta}}{\sqrt{2\pi}}[K_n^{-1}q_n](r,z)
+%\phi(r,z,\theta)=\sum_{n\in\mathbb{Z}}\frac{e^{in\theta}}{\sqrt{2\pi}}\big[(\alpha I + K_n^TK_n)^{-1}K_n^Tq_n\big](r,z)
+\end{align}
+In practice, we choose a truncation parameter, $N$, such that $||q-\sum\limits_{n=-N}^{N}\frac{e^{in\theta}}{\sqrt{2\pi}}q_n||\le\epsilon$:
+\begin{align}
+\phi_{approx}=\sum_{n=-N}^N\frac{e^{in\theta}}{\sqrt{2\pi}}K_n^{-1}q_n
+\end{align}
+
+
+A kernel is called translation invariant if for two points $(r,\theta,z)$ and $(r',\theta',z')$:
+\begin{align}
+K(r,\theta,z,r',\theta',z')=K(r-r',\theta-\theta',z-z')
+\end{align}
+
+\begin{align}
+K(\mathbf{x},\mathbf{x'})=\sum_{n\in\mathbb{Z}} \frac{e^{in(\theta-\theta')}}{\sqrt{2\pi}}k_n(r,z,r',z')
+\end{align}
+
+for $\mathbf{x}=(r,z,\theta)$ and $\mathbf{x'}=(r',z',\theta')$, where the $k_n$ functions are called Fourier modes. When a kernel is as above, a function of $(\theta-\theta',r,z,r',z')$, it is called rotationally invariant, rotationally symmetric, or axisymmetric. In particular, we are looking at the Fourier modes of the single-layer three-dimensional Laplace kernel:
+
+\begin{align}
+\frac{1}{4\pi |\mathbf{x}-\mathbf{x'}|}=\sum_{n\in\mathbb{Z}} \frac{e^{in(\theta-\theta')}}{\sqrt{2\pi}} s_n(r,z,r',z')
+\end{align}
+with: 
+\begin{align}
+s_n(r,z,r',z')=\frac{1}{\sqrt{8\pi^3 rr'}}\mathbf{Q}_{n-\frac{1}{2}}\bigg(\frac{r^2+(r')^2+(z-z')^2}{2rr'}\bigg)
+\end{align}
+
+This is specifically for particles or charges governed by an interior or exterior Dirichlet problem with Laplace's equation. On a three-dimensional surface $\Gamma$,
+
+\begin{align}
+\Delta u &= 0 \mbox{ in }\Omega\\
+u &= f \mbox{ on }\Gamma
+\end{align}
+
+This tactic of reducing a three-dimensional algorithm to a series of two dimensional algorithms is explained at length by Martinsson, Young, and Hao.
+
+\section{Translation Operators}
+A translation operator translates the multipole or local expansion of one box to that of another in the analytic FMM. In kernel-independent methods, translation operators translate weights or densities in one box to another box in the computational domain. Computing every translation operator in the entire computational domain would be extremely expensive. Consider one of the original uses of the FMM, computing pairwise forces between stars and planets in space, and this is clear.
+
+If a kernel is translation invariant, then translation operators will only differ based on relative position and level in the hierarchical tree. This is because the kernels used there only depended the relative difference between coordinate values, e.g. $(r-r')$.
+Translation operators can be computed without any knowledge of the sources or targets, so they are a true pre-computation. The only thing we'll need is a computational domain. We choose arbitrarily the box $[-1,1]\times[-1,1]$, although operators can be calculated for any rectangle.
+
+There are three types of translation operators. The multipole-to-multipole (M2M) operator translates densities in a box to densities in the parent box. The multipole-to-local (M2L) operator translates densities in a box to another box on the same level in the hierarchical tree that divides the computational domain. The local-to-local (L2L) operator translates densities in a box to densities in a child box.
+
+Translation operators are the backbone of a fast multipole method.
+
+These translation operators depend on the kernel of the partial differential equation that governs the relationship between source and target particles.
+
+The fast multipole method (FMM) has been applied to many different kernels. It has also been applied to many different density distributions. There are different flavors of the FMM to deal with difficult kernels for which there aren't workable analytic expansions. These so-called kernel-independent FMMs get around this issue. The original KIFMM uses a continuous distribution of an equivalent density on a surface enclosing a box in the hierarchical tree to represent the potential generated by sources in that box, rather than using analytic multipole expansions as in the original FMM. This allows us to construct an efficient FMM that only requires kernel evaluations. The KIFMM is also relatively easy to implement, since in general it applies to an arbitrary kernel that is the fundamental solution of some elliptic PDE. To change the kernel in the original FMM, one would need to develop analytic multipole expansions for that kernel that may be difficult to produce.
+\section{Analytic FMM}
+Why is an analytic FMM for a modal Green's function difficult? The problem with evaluating special functions -- Bessel or Hankel functions.
+
+For the full three-dimensional problem, it doesn't seem like there is an appropriate multipole or local expansion for say the single-layer Laplace kernel in cylindrical coordinates.
+
+\section{Kernel-Independent Methods}
+So we're left to kernel-independent methods.
+
+Literature review of kernel-independent fast methods. These methods can be separated into two categories. First, the not so kernel-independent methods which require that the kernel is the Green's function for some elliptic partial differential equation. These methods use the fact that the kernel satisfies a PDE. The most well-known method of this type is the so-called kernel-independent FMM, which was proposed by Ying, Biros, and Zorin in 2004. Second are methods which work with any smooth kernel, for example not a function of $|x-y|$. The most well-known method of this type is the black-box FMM, proposed by Fong and Darve in 2009.
+
+In the first type of method, we want to use the properties of the PDE to construct translation operators. Consider an exterior Dirichlet problem. There are three approaches we can use to represent the potential in the far-field: 1) use Green's third identity -- differential equations, 2) use integral equations, or 3) create equivalent densities and potentials. 3) is the choice of YBZ, and further detail of the construction of these operators is explored below. Essentially, an algorithm of this type depends on the source to multipole translation, and choice of a discretization scheme.
+
+\section{The kernel-independent FMM}
+Why not use the typical KIFMM from Ying, Biros, and Zorin? Review that. Or Martinsson with application to modal green's functions? Review that. Pre-computation is not optimal because of translation operators. Its application to our problem is difficult because the pre-computation will be expensive. There isn't any constant proportionality between the operators and so each operator will have to be computed individually which would be O().
+
+\subsection{Application}
+KIFMM with modal green's functions (Martinsson, Young, Hao)
+Its application to our problem is difficult because the pre-computation will be extremely expensive. There isn't any constant proportionality between the operators and so each operator will have to be computed individually which would be O().
+
+The original KIFMM paper by Ying, Biros, and Zorin, explored three data sets for the 3D case: densities distributed on the unit sphere, densities distributed uniformly on the unit cube, and densities distributed at the eight corners of the unit cube.
+
+While the original 3D KIFMM may be able to handle densities distributed on surfaces of revolution, \cite{YBZ} explains that the implementation is difficult. This project proposes to work around this issue by employing the technique described in \cite{YYM} to replace the 3D integral equations required by the 3D KIFMM with their Fourier representations, sequences of 2D integral equations. In this way, we can avoid the 3D KIFMM in favor of repeatedly applying the 2D KIFMM to accelerate pairwise computations of densities distributed on an axisymmetric surfaces of revolution.
+
+In addition, in $\S3.1$ we mentioned that this strategy is currently only applicable to the single-layer Laplace kernel because of the convenient analytic determination of its Fourier modes. We hope to be able to apply this strategy to other kernels as well by discretizing them as in \cite{YYM}.
+
+It's important to note that in the original KIFMM, translation operators only differ based on relative position and level in the hierarchical tree. This is because the kernels used there only depended the relative difference between coordinate values, e.g. $(r-r')$. As mentioned in $\S3.1$, for the single-layer Laplace kernel, however, we are not so lucky and so we need to look for some other relationship between the translation operators.
+
+Attempts to find constant relationships between the translation operators to minimize the pre-computation failed, and these wouldn't be expected anyway due to the nature of the kernel. So in this method, we need to compute every translation operator in the entire computational domain which would be expensive.
+
+
+The upward and downward formulation of the aforementioned equivalent densities and their translation are explained in detail in $\S3.2$ and shown in Figures 3, 4, 5, and 6.
+
+\begin{figure}[!ht]
+\begin{center}
+%\includegraphics[scale=0.9]{3dsurface}
+\end{center}
+\caption{An axisymmetric surface $\Gamma$ in 3D.}
+\end{figure}
+
+In this section we use the Fourier representation of surface integral equations described in $\S2.2$ together with the 2D KIFMM to create a fast algorithm for densities distributed on axisymmetric surfaces of revolution. Notation in this section for the surfaces follows \cite{YBZ}.
+
+\subsection{Single-layer 3D Laplace kernel}
+For now, we apply the algorithm considering only the single-layer 3D Laplace kernel. This choice has been made because its Fourier modes can be solved for analytically. For many other kernels, that is not that case, and we would need to approximate the modes using a discretization. This is left for future work.
+
+We find the Fourier modes for this kernel below as in \cite{YYM}. For $\mathbf{x}=(r,z,\theta)$ and $\mathbf{y}=(r',z',\theta')$:
+\begin{align}
+k(\mathbf{x},\mathbf{y})&=\frac{1}{4\pi |\mathbf{x}-\mathbf{y}|}\\
+&=\frac{1}{4\pi\sqrt{r^2+r'^2-2rr'\cos{(\theta-\theta')}+(z-z')^2}}\\
+&=\sum_{n\in\mathbb{Z}}\frac{e^{in\theta}}{\sqrt{2\pi}}k_n(r,z,r',z')\\
+\mbox{where }k_n(r,z,r',z')&=\frac{1}{\sqrt{8\pi^3rr'}}Q_{n-\frac{1}{2}}\bigg(\frac{r^2+(r')^2+(z-z')^2}{2rr'}\bigg)
+\end{align}
+and $Q_{n-\frac{1}{2}}$ is the half-integer order Legendre function of the second kind.
+
+Notice that $k_n$ does not depend only on the difference between each coordinate, e.g. $(r-r')$. This has implications for the translation operators we construct for the KIFMM which is discussed in $\S3.2.4$.
+
+\subsection{Full algorithm}
+Recall that in the 3D KIFMM, we needed to solve surface integral equations like:
+\begin{align}
+\mbox{S2M: }&\int_{\mathbf{y}^{B,u}}{k(\mathbf{x},\mathbf{y})}\phi^{B,u}{(\mathbf{y})}d\mathbf{y}=\sum\limits_{i\in I_s^B} k(\mathbf{x},\mathbf{y}_i)\phi_i\mbox{ for all }\mathbf{x}\in\mathbf{x}^{B,u}
+\end{align}
+We can write $(15)$ as a sequence of 2D equations, $(16)$, by using the Fourier representation explained in $\S2.2$. If this is unclear, equation $(15)$ is to $(16)$ as equation $(1)$ is to $(3)$. In calculations below, I will skip this derivation and just state the sequences of 2D equations.
+
+Now that we have our kernel $k_n$, we proceed through the standard 2D KIFMM algorithm for the sources on the 2D generating curve $\gamma$ \textbf{for each} $n\in[-N,-N+1,\dots,N]$ where $N$ is the truncation parameter chosen earlier in $(10)$. The KIFMM algorithm is very similar to the FMM algorithm described in \cite{CGR}, apart from how the equivalent densities are represented, and how the translation operators are computed. As mentioned earlier, rather than by multipole expansions, the potential due to sources in a box is matched to an equivalent density at discretization points on a surface enclosing the box. In 2D, these surfaces are circles with radii prescribed in \cite{YBZ}. To compute these equivalent densities, we will need to discretize several integral operators on different surfaces, which is explained in $\S3.2.2$.
+
+In the following equations, $\mathbf{x}=(r,z)$ and $\mathbf{y}=(r',z')$. Also, please note the seemingly out-of-place $r'$ term under each integral, and recall that this is actually part of the integral operator $K_n$ as in $(3)$.
+\subsubsection{Equivalent densities}
+After partitioning the hierarchical tree with no more than a prescribed number of sources in each box, compute the upward equivalent density for each leaf box. Similar to the \textbf{S2M} step in the FMM, solving the following equation for $\phi^{B,u}$ gives the upward equivalent density for a box $B$ in the KIFMM:
+\begin{align}
+\mbox{S2M: }&\int_{\mathbf{y}^{B,u}}{k_n(\mathbf{x},\mathbf{y})}\phi^{B,u}_n{(\mathbf{y})}r'd\mathbf{y}=\sum\limits_{i\in I_s^B} k_n(\mathbf{x},\mathbf{y}_i)\phi_ir'_i\mbox{ for all }\mathbf{x}\in\mathbf{x}^{B,u}\\
+\mbox{Discretized S2M: }&M_n\phi^{B,u}_n=q_n^{B,u}
+\end{align}
+where in $(17)$, $M_n$ is the matrix of kernel evaluations of pairs of discretization points on the upward check surface and upward equivalent surface of a box $B$, $q_n^{B,u}$ is the upward check potential, and the densities at the actual source points in the box are $\phi_i$. This is similar to $(7)$, and this process is illustrated in Figure 3. Once the upward equivalent density is computed for each leaf box, we use translation operators to find the upward and downward equivalent densities for every other box.
+
+\begin{figure}[!ht]
+\begin{center}
+%\includegraphics[scale=0.5]{ued-curve}
+%\includegraphics[scale=0.5]{ded-curve}
+\end{center}
+\caption{Left: The upward check (blue) and equivalent (red) surfaces of a box used to compute the upward equivalent density due to source densities (black) in the box. Right: The downward check (blue) and equivalent (red) surfaces of a box used to compute the downward equivalent density due to sources densities (black) in the far field on the box. In the algorithm, we never actually directly compute a downward equivalent density.}
+\end{figure}
+
+\subsubsection{Translation Operators}
+
+Translation operators limit the number of equivalent densities we need to compute directly by translating upward equivalent densities of the leaf boxes to upward and downward equivalent densities of all other boxes. In the KIFMM in particular, the translation operators in their discretized form are matrices that translate an equivalent density from one box to that of another. They are a pre-computation, as they are constant regardless of the source distribution.
+
+In the previous step, we computed the upward equivalent density for each leaf box. The \textbf{M2M} operator translates the upward equivalent density from a leaf box $A$ to the upward equivalent density of its parent box $B$. Solving the following equation for $\phi_n^{B,u}$ gives the M2M operator.
+\begin{align}
+\mbox{M2M: }&\int_{\mathbf{y}^{B,u}}{k_n(\mathbf{x},\mathbf{y})}\phi^{B,u}_n{(\mathbf{y})}r'd\mathbf{y} = \int_{\mathbf{y}^{A,u}}{k_n(\mathbf{x},\mathbf{y})}\phi^{A,u}_n{(\mathbf{y})}r'd\mathbf{y}\mbox{ for all }\mathbf{x}\in\mathbf{x}^{B,u}\\
+\mbox{Discretized M2M: }&M_n^B\phi^{B,u}_n=M_n^A\phi^{A,u}_n
+\end{align}
+where $M_n^A$ is the matrix of kernel evaluations of pairs of discretization points on the upward check surface of box $B$ and the upward equivalent surface of box $A$, and $M_n^B$ is the matrix of kernel evaluations of pairs of discretization points on the upward check surface of box $B$ and the upward equivalent surface of box $B$. Figure 4 gives a graphical representation of this step.
+
+So the M2M translation operator is:
+
+\begin{align}
+T^{M2M} &= (M_n^B)^{-1}M_n^A\\
+&= \begin{pmatrix}
+  K(\mathbf{x_1},\mathbf{y_1}) & \cdots & K(\mathbf{x_1},\mathbf{y_m})  \\
+  \vdots  & \ddots & \vdots  \\
+  K(\mathbf{x_m},\mathbf{y_1}) & \cdots & K(\mathbf{x_m},\mathbf{y_m}) 
+ \end{pmatrix}^{-1}\begin{pmatrix}
+  K(\mathbf{x_1},\mathbf{y_1}) & \cdots & K(\mathbf{x_1},\mathbf{y_m})  \\
+  \vdots  & \ddots & \vdots  \\
+  K(\mathbf{x_m},\mathbf{y_1}) & \cdots & K(\mathbf{x_m},\mathbf{y_m}) 
+ \end{pmatrix}
+\end{align}
+
+
+\begin{figure}[!ht]
+\begin{center}
+%\includegraphics[scale=0.5]{M2M-curve}
+\end{center}
+\caption{The upward equivalent density due to the source densities (black) in the child box computed from the upward equivalent (red) and check (blue) surfaces of the child box is translated to the upward equivalent density of the parent box, checking against its upward check (blue) and equivalent (red) surfaces.}
+\end{figure}
+
+After repeating that step, every box now has an upward equivalent density. The \textbf{M2L} operator translates the upward equivalent density from a non-leaf box $A$ to the downward equivalent density of a box $B$ on the same level.
+\begin{align}
+\mbox{M2L: }&\int_{\mathbf{y}^{B,d}}{k_n(\mathbf{x},\mathbf{y})}\phi^{B,d}_n{(\mathbf{y})}r'd\mathbf{y} = \int_{\mathbf{y}^{A,u}}{k_n(\mathbf{x},\mathbf{y})}\phi^{A,u}_n{(\mathbf{y})}r'd\mathbf{y}\mbox{ for all }\mathbf{x}\in\mathbf{x}^{B,d}\\
+\mbox{Discretized M2L: }&M_n^B\phi^{B,d}_n=M_n^A\phi^{A,u}_n
+\end{align}
+where $M_n^A$ is the matrix of kernel evaluations of pairs of discretization points on the downward check surface of box $B$ and the upward equivalent surface of box $A$, and $M_n^B$ is the matrix of kernel evaluations of pairs of discretization points on the downward check surface of box $B$ and the downward equivalent surface of box $B$.
+
+\begin{figure}[!ht]
+\begin{center}
+%\includegraphics[scale=0.5]{M2L-curve}
+\end{center}
+\caption{The upward equivalent density due to the source densities (black) in a box computed from the upward equivalent (red) and check (blue) surfaces of the child box is translated to the downward equivalent density of another box on the same level, checking against its upward check (blue) and equivalent (red) surfaces.}
+\end{figure}
+
+After repeating that step, every non-leaf box has a downward equivalent density. The \textbf{L2L} operator translates the downward equivalent density of a non-leaf box $A$ to the downward equivalent density of a child box $B$.
+\begin{align}
+\mbox{L2L: }&\int_{\mathbf{y}^{B,d}}{k_n(\mathbf{x},\mathbf{y})}\phi^{B,d}_n{(\mathbf{y})}r'd\mathbf{y}=\int_{\mathbf{y}^{A,d}}{k_n(\mathbf{x},\mathbf{y})}\phi^{A,d}_n{(\mathbf{y})}r'd\mathbf{y}\mbox{ for all }\mathbf{x}\in\mathbf{x}^{B,d}\\
+\mbox{Discretized L2L: }&M_n^B\phi^{B,d}_n=M_n^A\phi^{A,d}_n
+\end{align}
+where $M_n^A$ is the matrix of kernel evaluations of pairs of discretization points on the downward check surface of box $B$ and the downward equivalent surface of box $A$, and $M_n^B$ is the matrix of kernel evaluations of pairs of discretization points on the downward check surface of box $B$ and the downward equivalent surface of box $B$. After repeating this step, every box now has an upward and downward equivalent density.
+
+\begin{figure}[!ht]
+\begin{center}
+%\includegraphics[scale=0.5]{L2L-curve}
+\end{center}
+\caption{The downward equivalent density due to the source densities (black) in a parent box computed from the upward equivalent (red) and check (blue) surfaces of the parent box is translated to the downward equivalent density of a child box, checking against its upward check (blue) and equivalent (red) surfaces.}
+\end{figure}
+
+Once we have these upward and downward equivalent densities for every $n\in[-N,\dots,N]$, then we can reconstruct the 3D equivalent densities $\phi_{approx}$ by summing as in $(10)$. This summing can be accelerated via the FFT. Having these equivalent densities in 3D, we can complete the last step of the KIFMM algorithm by evaluating the far- and then near-field interactions.
+
+Note that all requirements for smoothness and uniqueness of the solution to the integral equations in the KIFMM listed in $\S3.1.5$ of \cite{YBZ} (mostly pertaining to the sizes and positions of the surfaces) are satisfied here.
+
+\subsubsection{Discretization details}
+The equations in $\S3.2.1$ are discretized using $p$ points on the equivalent and check surfaces. $p$ is constant for all boxes, and the choice of $p$ determines the error level of the computations.This discretization requires two steps. First, the right hand side is the evaluation of a check potential. This step checks that the potential represented by the equivalent density and the actual source densities are the same to all boxes in the far field. Then on the left hand side, we invert a Dirichlet-type boundary integral equation to obtain the equivalent density. To stably solve this equation, as in \cite{YBZ}, we use Tikhonov regularization with regularization parameter $\alpha=10^{-12}$. Essentially, each translation is simply applying a series of matrices.
+
+For example, the M2L operator is the matrix $T^{M2L}_n$ for a mode $n$ is obtained by solving $(20)$:
+\begin{align}
+\phi^{B,d}_n&=\bigg[\big[\alpha I +(M_n^B)^TM_n^B\big](M_n^B)^TM_n^A\bigg]\phi^{A,u}_n\\
+\implies T^{M2L}_n &= \bigg[\big[\alpha I +(M_n^B)^TM_n^B\big](M_n^B)^TM_n^A\bigg]
+\end{align}
+
+
+\section{The black-box FMM}
+We now consider using the black-box FMM or a Chebyshev interpolation-based scheme. review bbFMM
+
+efficient evaluation of modal green's function was explored by Abdelmageed (see equation $39$), and others. These could be implemented to actually compute the kernel at different Chebyshev nodes. We are, however, concerned not only with the efficient evaluation of these analytic expansions, but also the fast evaluation of their sums.
+
+The bbFMM is ideal for complicated kernels, perhaps without translation invariance, or maybe having no explicit analytic form or only defined at a certain number of points. Maybe it has a very complicated analytic form that isn't easy to work with in the standard FMM or KIFMM. The bbFMM only requires the evaluation of the kernel at specific points.
+
+Another advantage that is of direct consequence to this project is the small pre-computation for large systems and use of the minimal number of coefficients to represent the far field.
+
+This method combines the methods of SVD compression and Chebyshev interpolation.
+
+These points are Chebyshev nodes, which are the roots of $T(x)=$. The formula for nodes on $[a,b]$ is: $x=$. This is just in one dimension, points on an interval. For two dimensions, consider two axes $r$ and $z$, and the Chebyshev nodes on each interval. The nodes in the box these intervals create are all of the possible $(r,z)$ pairs of the nodes in each respective interval.
+
+\section{Application}
+application to our problem
+Consider that for each mode n, the computation of the weights is simply a matrix
+$W_{m_1,m_2}=\sum_{j=1}^N \sigma_j R_n(\mathbf{\overline{y}}_{m_1,m_2},\mathbf{y}_j)$
+\subsection{S2M}
+\subsection{M2M}
+\subsection{M2L}
+\subsection{L2L}
+\subsection{L2T}
+\section{Linear Algebra}
+linear algebra, SVD, ID, recursive skeletonization
+
+\section{Numerical Results}
+Some numerical result. One thing the bbFMM authors did was the pre-computation time for all necessary operators over multiple computational domains with different number of levels.
+
+In particular, we fix the root level of the computational domain as the box $[-1,1]\times [-1,1]$ in two-dimensional $(r,z)$-space, and vary the number of levels in the computational domain, and the number of Chebyshev nodes in each box. Note that the number of Chebyshev nodes is the same for every box, regardless of size or level. Note also that we have just provided reasoning for why we're able to simply consider one root level of the computational domain. We'll have the same number of operators to compute, and so the computational complexity doesn't depend on the size or location of this root box.
+
+\section{Implementation}
+Currently, we are able to produce and have teseted all equivalent densities and translation operators with Python programs for the Chebyshev interpolation-based FMM. However, we are just using the logarithmic kernel instead of the single-layer 3D Laplace kernel's Fourier modes (Legendre Q functions).
+
+Much of the future work to do is in fully implementing the algorithm in Python. One key piece of this will be accelerating the M2L operation using singular value decomposition (SVD) and other acceleration techniques described in \cite{MV} and \cite{FD}.
+
+In this appendix we describe exactly the computations done by each of our test programs.
+$\mathbf{2D-M2L+L2L.py}$
+
+This file compares the actual local expansion of a box with our estimate of its local expansion. In this example we consider the computational domain to be only these boxes, with empty space (no sources) outside it.
+
+The computation of the actual local expansion is straightforward. This is the potential at a target point inside the target box due to all sources in the far field $\mathbf{F}$. For our example, this means a target point in the box $T$ due to sources in $P_1,\dots,P_7$ and $C_1,\dots,C_{27}$. For the target point $\mathbf{x_0}$ and source points $\mathbf{x_j}$ with weight $\sigma_j$, the calculation is:
+
+\begin{align}
+f(\mathbf{x_0}) = \sum_{\mathbf{x_j}\in \mathbf{F}} K(\mathbf{x_0},\mathbf{x_j})\sigma_j
+\end{align}
+
+Now we compute the estimated local expansion. In general in an FMM, the local expansion for a box is the sum of the multipole-to-local operations and the local-to-local operation for this box.
+
+We start by placing sources points in each box $P_1,\dots,P_7$ and $C_1,\dots,C_{27}$, and assigning each source a charge of $+1$ or $-1$. The $C$ boxes are in the interaction list of the target box. The $P$ boxes are in the interaction list of the parent box of the target box. We need to develop an equivalent density for each box $P_1,\dots,P_7$ and $C_1,\dots,C_{27}$, which is a set of $n^2$ weights at the Chebyshev nodes in each box. For each box, take $P1$ for example, this equivalent density $W$ at a node $\overline{y}_{m_1,m_2}$ is the sum over $\mathbf{y}_j$ in $P_1$ of the $R$ function at each node and each source multiplied by the charge at the source:
+\begin{align}
+W(m_1,m_2) = \sum_{y_j\in P_1} R_n(\mathbf{\overline{y}}_{m_1,m_2},\mathbf{y}_j)\sigma_j
+\end{align}
+Once these weights have been computed for every box in the far field, we compute the multipole-to-local operations for each of the boxes in the interaction list of the parent box. The sum of these over each interaction list box will be the entire local expansion for the parent, since the contribution of the local-to-local operator for this parent is $0$ as the grandparent in our case has no interaction list in the computational domain. The $M2L$ operation at each node in the parent box is such for parent box $P$ and interaction boxes $P_1,\dots,P_7$:
+\begin{align}
+g^P_{l_1,l_2} = \sum_{i=1}^7\sum_{m_1=1}^n\sum_{m_2=1}^n W_{m_1,m_2}^{P_i}K(\mathbf{\overline{x}}^P_{l_1,l_2},\mathbf{\overline{y}}^{P_i}_{m_1,m_2})
+\end{align}
+
+Now we compute the same $M2L$ operations at each node in the target box $T$:
+\begin{align}
+g^T_{l_1,l_2} = \sum_{i=1}^{27}\sum_{m_1=1}^n\sum_{m_2=1}^n W_{m_1,m_2}^{C_i}K(\mathbf{\overline{x}}^C_{l_1,l_2},\mathbf{\overline{y}}^{C_i}_{m_1,m_2})
+\end{align}
+
+Then we compute the estimated local expansion $f$ at each node in the box $T$:
+\begin{align}
+f^T_{l_1,l_2} = g^T_{l_1,l_2} + \sum_{l'_1=1}^n\sum_{l'_2=1}^n g^P_{l'_1,l'_2}R_n(\mathbf{\overline{x}}^T_{l_1,l_2},\mathbf{\overline{x}}^P_{l'_1,l'_2})
+\end{align}
+
+Finally we compute the estimated potential at the target point due to sources in the far field $\mathbf{F}$:
+\begin{align}
+f(\mathbf{x}_0) = \sum_{l_1=1}^n\sum_{l_2=1}^n f^T_{l_1,l_2} R_n(\mathbf{\overline{x}}^T_{l_1,l_2},\mathbf{x}_0)
+\end{align}
+
+All that's left to do is compare this with the above computation of the actual potential we computed naively.
+
+
+\section{Future Work}
+In this chapter, we discuss work that needs to be done. Ultimately, the translation operators are the core of any kernel-independent fast multipole method. They will work with any density distribution, so once that is specified, we can add a hierarchical tree and complete the algorithm.
+
+One potential problem is with the evaluation of $k_n$ at certain Chebyshev nodes with either $r$-value equal to $0$. This will be undefined since $\chi = \frac{r^2+(r')^2+(z-z')^2}{2rr'}$. For example, this would occur if we have the box $[-a,a]\times[-a,a]$, such that a node is the origin. However, perhaps only the right half-place need be considered because if we're considering axisymmetric three-dimensional distributions then in two dimensions, we are considering a generative curve only in the right half-plane.
+
+Full error and complexity analysis.
+
+\begin{thebibliography}{99}\addcontentsline{toc}{chapter}{Bibliography}
+
+\bibitem{CGR} Cheng, H., Greengard, L., Rokhlin, V., \emph{A Fast Adaptive Multipole Algorithm in Three Dimensions}. Journal of Computational Physics, 155, (1999), 468-498.
+
+\bibitem{FD} Fong, W., Darve, E., \emph{A black-box fast multipole method}. Journal of Computational Physics.
+
+\bibitem{HMY} Hao, S., Martinsson, P.G., Young, P., \emph{An efficient and highly accurate solver for multi-body acoustic scattering problems involving rotationally symmetric scatterers}. Computers and Mathematics with Applications, 69, (2015), 304-318.
+
+\bibitem{MV} Martinsson, P.G., Rokhlin, V., \emph{An accelerated kernel-independent fast multipole method in one dimension}. SIAM Journal of Scientific Computing, Vol. 29, No. 3, (2007), 1160-1178.
+
+\bibitem{YBZ} Ying, L., Biros, G., Zorin, D., \emph{A kernel-independent adaptive fast multipole method algorithm in two and three dimensions}. Journal of Computational Physics, 196, (2004), 591-626.
+
+\bibitem{YYM} Young, P., Yao, S., Martinsson, P.G., \emph{A high-order Nystr{\"o}m discretization scheme for boundary integral equations defined on rotationally symmetric surfaces}. Journal of Computational Physics, 231, (2012), 4142-4159.
+
+\end{thebibliography}
+\end{document}
+
+
+

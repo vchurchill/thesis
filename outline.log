@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015) (preloaded format=pdflatex 2015.5.24)  4 MAY 2016 02:53
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015) (preloaded format=pdflatex 2015.5.24)  4 MAY 2016 10:02
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -282,32 +282,44 @@ LaTeX Warning: No \author given.
 
 {/usr/local/texlive/2015/texmf-var/fonts/map/pdftex/updmap/pdftex.map}]
 [2] [3] [4] [5] [6] [7] [8] [9]
-Overfull \hbox (6.83925pt too wide) in paragraph at lines 271--272
-[]\OT1/cmr/m/n/10.95 Once we have these up-ward and down-ward equiv-a-lent den-
-si-ties for ev-ery $\OML/cmm/m/it/10.95 n \OMS/cmsy/m/n/10.95 2 \OT1/cmr/m/n/10
-.95 [\OMS/cmsy/m/n/10.95 ^^@\OML/cmm/m/it/10.95 N; [] ; N\OT1/cmr/m/n/10.95 ]$,
-
- []
-
-[10] [11] [12] [13] [14]
-Underfull \hbox (badness 10000) in paragraph at lines 395--396
+Underfull \hbox (badness 10000) in paragraph at lines 276--277
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 403--404
+Underfull \hbox (badness 10000) in paragraph at lines 278--279
 
  []
 
-[15] [16] [17] (./outline.aux) ) 
+
+Underfull \hbox (badness 10000) in paragraph at lines 280--281
+
+ []
+
+[10]
+Underfull \hbox (badness 10000) in paragraph at lines 282--283
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 289--290
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 292--293
+
+ []
+
+[11] [12] [13] (./outline.aux) ) 
 Here is how much of TeX's memory you used:
- 2968 strings out of 493089
- 40076 string characters out of 6134842
- 113481 words of memory out of 5000000
- 6414 multiletter control sequences out of 15000+600000
+ 2969 strings out of 493089
+ 40080 string characters out of 6134842
+ 112500 words of memory out of 5000000
+ 6415 multiletter control sequences out of 15000+600000
  12925 words of font info for 48 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 38i,16n,26p,1054b,209s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 38i,14n,26p,959b,218s stack positions out of 5000i,500n,10000p,200000b,80000s
 </usr/local/texlive/2015/texmf-dist/fonts/type1
 /public/amsfonts/cm/cmbx10.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1/
 public/amsfonts/cm/cmbx12.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1/p
@@ -327,10 +339,10 @@ mr8.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy
 fb></usr/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pf
 b></usr/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm1
 0.pfb>
-Output written on outline.pdf (17 pages, 244343 bytes).
+Output written on outline.pdf (13 pages, 225036 bytes).
 PDF statistics:
- 131 PDF objects out of 1000 (max. 8388607)
- 93 compressed objects within 1 object stream
+ 119 PDF objects out of 1000 (max. 8388607)
+ 85 compressed objects within 1 object stream
  0 named destinations out of 1000 (max. 500000)
  1 words of extra memory for PDF output out of 10000 (max. 10000000)
 

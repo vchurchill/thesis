@@ -18,31 +18,28 @@
 This project examines the problem of constructing a fast multipole method (FMM) algorithm for an important category of non-uniform density distributions: axisymmetric surfaces of revolution.
 
 In this project, we will work in three-dimensional cylindrical coordinates $(r,\theta,z)$ such that a point in Cartesian coordinates $(x,y,z)$ is represented by:
-
-\begin{align}
-r &= \sqrt{x^2+y^2}\\
-\theta &=   \begin{cases}
-    0 & \mbox{if } x = 0 \mbox{ and } y = 0\\
-    \arcsin(\frac{y}{r}) & \mbox{if } x \geq 0 \\	
-    \arctan(\frac{y}{x}) & \mbox{if } x > 0 \\	
-    -\arcsin(\frac{y}{r}) + \pi & \mbox{if } x < 0
-  \end{cases}\\
+\begin{align*}
+x &= r\cos\theta\\
+y &= r\sin\theta\\
 z &= z
-\end{align}
+\end{align*}
 
 An axisymmetric, or rotationally symmetric, surface is one that has symmetry along the $\theta$-axis. An axisymmetric surface $\Gamma$ is obtained by rotating a two-dimensional curve $\gamma$ about the $z$ axis. $\gamma$ is called the generating curve. In particular, $\Gamma=\gamma\times\mathbb{T}$ where $\mathbb{T}$ is the one-dimensional torus (circle) parametrized by $\theta\in(-\pi,\pi]$.
+
+% HIGHLIGHT
+Describe the need for a modal FMM, or FMM for axisymmetric surfaces with difficult geometries. This need stems from the number of discretization points needed to accurately represent complicated generating curves. For example, a circular generating curve is easy to discretize with some finite number of points equally spaced, however for a rectangle, we need more discretization points in the corners. Finally, for something like a thin strip with a circle, we need many many discretization points in this small space.
 
 Density distributions on axisymmetric surfaces have many applications. For example, the problem of electromagnetic scattering by a surface of revolution has radar, geophysical exploration, and acoustics applications. This type of problem relies on creating a fast algorithm for a set of densities (charges, weights, etc.) distributed on an axisymmetric surface.
 
 \section{Statement of problem}
-Consider $P$ source points $\mathbf{y}_j=(r',\theta',z')$ distributed on this surface $\Gamma$, with each assigned a charge $\sigma_j$ of $\pm 1$. We want to compute the potential at some target points $\mathbf{x}_i=(r,\theta,z)$ also on $\Gamma$ (in practice sources and targets are the same points) due to the sources, which is represented by the sum
+Consider $N$ source points $\mathbf{y}_j=(r',\theta',z')$ distributed on this surface $\Gamma$, with each assigned a charge $\sigma_j$. We want to compute the potential at target points $\mathbf{x}_i=(r,\theta,z)$ also on $\Gamma$ (in practice sources and targets are the same points) due to the sources, which is represented by the sum
 % in the continuous case, the integral equation
 %\begin{align}
 %f(\mathbf{x}) &= \int_\Gamma K(\mathbf{x},\mathbf{y})\sigma(\mathbf{y}) d\mathbf{y} &\mathbf{y}\in\Gamma
 %\end{align}
 %that we discretize
 \begin{align}
-f(\mathbf{x}_i) = \sum_{j=1}^P K(\mathbf{x}_i,\mathbf{y}_j)\sigma_j
+f(\mathbf{x}_i) = \sum_{j=1}^N K(\mathbf{x}_i,\mathbf{y}_j)\sigma_j
 \end{align}
 where $f(\mathbf{x}_i)$ is the potential and $K(\mathbf{x},\mathbf{y})$ is a kernel, typically the Green's function of the partial differential equation that governs the relationship between sources and targets. In particular, we are interested in the free-space Green's function for Laplace's equation:
 \begin{align}
@@ -53,7 +50,7 @@ K(\mathbf{x},\mathbf{y}) = \frac{1}{4\pi |\mathbf{x}-\mathbf{y}|}
 %\Delta u &= 0 \mbox{ in }\Omega\\
 %u &= f \mbox{ on }\Gamma
 %\end{align}
-The goal is to construct a fast summation method for equation $(4)$.
+The goal is to construct a fast summation method for equation $(4)$ using the rotational symmetry of the surface $\Gamma$.
 
 \section{Modal Green's Function}
 
@@ -65,14 +62,14 @@ K(\mathbf{x},\mathbf{y})=K(\theta-\theta',r,z,r',z')
 \end{align}
 We call such a kernel rotationally invariant.
 
-Recall that if for two any points $(r,\theta,z)$ and $(r',\theta',z')$ in the computational domain a kernel can be written
+Recall that if for two any points $\mathbf{x}$ and $\mathbf{y}$ in the computational domain a kernel can be written
 \begin{align}
-K(\mathbf{x},\mathbf{y}) = K(r,\theta,z,r',\theta',z')=K(\theta-\theta',r-r',z-z')
+K(\mathbf{x},\mathbf{y}) = K(|\mathbf{x}-\mathbf{y}|)%maybe without absolute values
 \end{align}
-then it is called translation invariant. This is not the case for all kernels, however, and that fact is crucial to the difficulty of creating an optimal FMM in this scenario.
+then it is called translation invariant. Notice that the Green's function for Laplace's equation is translation invariant. This is not the case for all kernels, however, and the fact that what we'll define in next as the modal Green's function is not translation invariant is crucial to the difficulty of creating an optimal FMM in this scenario.
 
 \subsection{Fourier representation of 3D integral equations}
-
+This follows closely \cite{YYM}.
 Consider the Fredholm integral equation of the first kind defined on the axisymmetric surface $\Gamma$ in three dimensions, which is a continuous version of equation $(4)$:
 \begin{align}
 f(\mathbf{x}) &= \int_\Gamma K(\mathbf{x},\mathbf{y})\sigma(\mathbf{y})d\mathbf{y} &\mathbf{x},\mathbf{y}\in\Gamma
@@ -81,7 +78,7 @@ where $K$ is a kernel function, $\sigma$ are the charges, and $f$ is the potenti
 
 We can restate this as a sequence of integral equations defined on the generating curve $\gamma$ of $\Gamma$ by performing a Fourier transform. If $\sigma_n$, $f_n$, and $k_n$ are the Fourier modes of $\sigma$, $f$, and $K$, respectively, then we have
 \begin{align}
-\sqrt{2\pi}\int_\gamma k_n(r,z,r',z')\sigma_n(r',z')r'dl(r',z')&=f_n(r,z) &(r',z')\in\gamma
+\sqrt{2\pi}\int_\gamma k_n(r,z,r',z')\sigma_n(r',z')r'dl(r',z')&=f_n(r,z) &(r,z),(r',z')\in\gamma
 \end{align}
 for each $n\in\mathbb{Z}$, such that
 \begin{align}
@@ -105,10 +102,11 @@ k_n(r,z,r',z')&=\int_\mathbb{T}\frac{e^{-in\theta}}{\sqrt{2\pi}}K(r,z,r',z',\the
 %\phi(r,z,\theta)=\sum_{n\in\mathbb{Z}}\frac{e^{in\theta}}{\sqrt{2\pi}}[K_n^{-1}q_n](r,z)
 %\phi(r,z,\theta)=\sum_{n\in\mathbb{Z}}\frac{e^{in\theta}}{\sqrt{2\pi}}\big[(\alpha I + K_n^TK_n)^{-1}K_n^Tq_n\big](r,z)
 %\end{align}
-%In practice, we choose a truncation parameter, $N$, such that $||q-\sum\limits_{n=-N}^{N}\frac{e^{in%\theta}}{\sqrt{2\pi}}q_n||\le\epsilon$:
-%\begin{align}
-%\phi_{approx}=\sum_{n=-N}^N\frac{e^{in\theta}}{\sqrt{2\pi}}K_n^{-1}q_n
-%\end{align}
+In practice, we choose a truncation parameter, $M\in\mathbb{N}$, such that $f$ is well-represented by its lowest $2M+1$ Fourier modes
+\begin{align}
+||f-\sum\limits_{n=-M}^{M}\frac{e^{in\theta}}{\sqrt{2\pi}}f_n||\le\epsilon
+\end{align}
+and only compute the lowest $2M+1$ Fourier modes for each of the functions $f$, $\sigma$, and $K$.
 
 As stated previously we are using the Green's function of a PDE as our kernel, so we call $k_n$ the modal Green's function. In particular, we are interested in the Fourier expansion of the free-space Green's function for Laplace's equation
 \begin{align}
@@ -119,9 +117,9 @@ where the modal Green's function is
 \begin{align}
 s_n(r,z,r',z')=\frac{1}{\sqrt{8\pi^3 rr'}}\mathbf{Q}_{n-\frac{1}{2}}\bigg(\frac{r^2+(r')^2+(z-z')^2}{2rr'}\bigg)
 \end{align}
-with $Q_{n-\frac{1}{2}}$ the half-integer order Legendre function of the second kind. The efficient evaluation of modal Green's function for Laplace's equation, and the $Q$-function in particular, has been explored by Abdelmageed (see equation $39$), and others. These should be implemented to quickly evaluate the kernel at the different Chebyshev nodes. However, we are concerned not only with the efficient evaluation of this function but the fast evaluation of their sums.
+with $Q_{n-\frac{1}{2}}$ the half-integer order Legendre function of the second kind. The efficient evaluation of modal Green's function for Laplace's equation, and the $Q$-function in particular, has been explored by Abdelmageed (see equation $39$), and others. The methods described there can be implemented to quickly evaluate $s_n$. However, we are concerned not only with the efficient evaluation of this function but the fast evaluation of their sums.
 
-Now rather than constructing a fast summation for a density distribution on $\Gamma$ using $K(\mathbf{x},\mathbf{y})$, we can construct a series of fast summations for a density distribution on $\gamma$ using $s_n(r,z,r',z')$. However, notice that $s_n$ is translation variant. This has implications for the efficient pre-computation of translation operators which we discuss later.
+Now rather than constructing a fast summation for a density distribution on $\Gamma$ using $K(\mathbf{x},\mathbf{y})$, we can construct a series of fast summations for a density distribution on $\gamma$ using $s_n(r,z,r',z')$. However, notice that $s_n$ is not translation invariant. This has implications for the efficient pre-computation of translation operators which we discuss later.
 
 We should note that for now we are only considering the Green's function for Laplace's equation because its Fourier modes can be solved for analytically. For many other kernels, it is not possible to find the same type of explicit formula, and we would need to approximate the modes using a discretization.
 
@@ -129,50 +127,59 @@ We should also note that for densities distributed on the axisymmetric surface $
 
 In the next sections, we look at how several well-known fast methods approach this problem.
 
-\section{Translation Operators}
+\section{The fast multipole method}
+Overview of the FMM
+
+\subsection{Analysis-based FMM} (special functions FMM)
+
+The original FMM \cite{GR} first developed by Greengard and Rokhlin relies on analytic expansions for the potential at some target in the far field due to sources in a box (multipole) and the potential at a target in a box due to all sources in the far field (local). Originally this was done using Legendre polynomials and spherical harmonics to represent the kernel $1/r$.
+
+Our full three-dimensional problem is currently not possible as stated with an analytic FMM since we do not yet have multipole or local expansions for the free-space Green's function for Laplace's equation in three-dimensional cylindrical coordinates.
+
+We can consider an analytic FMM for the series of modal Green's functions, but again the analytic expansion has not been determined, and in fact, may not even exist. In addition, this method will require the evaluation of special functions. Why is this bad/expensive?
+
+In addition, a problem arises when we have many sources distributed in close proximity. (why is this the case again?)
+
+The necessary analytic machinery for the kernels $s_n$ does not exist, and is in fact, very inefficient to construct.
+
+\subsection{Kernel-Independent Methods}
+
+linear algebraic and PDE(green's idnentities)
+
+Ruling out an analytic FMM to accelerate the sum, we're left with kernel-independent methods. These methods can be separated into two categories. First, the not so kernel-independent methods which require that the kernel is the Green's function for some elliptic partial differential equation. The most well-known method of this type is the kernel-independent FMM (KIFMM), which was proposed by Ying, Biros, and Zorin. Second are methods which work with any smooth kernel and require only its evaluation at some points. The most well-known method of this type is the black-box FMM (bbFMM) by Fong and Darve.
+
+%In the first type of method, we want to use the properties of the PDE to construct translation operators. Consider an exterior Dirichlet problem. There are three approaches we can use to represent the potential in the far-field: 1) use Green's third identity -- differential equations, 2) use integral equations, or 3) create equivalent densities and potentials. 3) is the choice of YBZ, and further detail of the construction of these operators is explored below. Essentially, an algorithm of this type depends on the source to multipole translation, and choice of a discretization scheme.
+
+\subsection{Translation Operators}
 First, though, we need to talk about translation operators. Recall that in the analytic FMM, a translation operator translates the multipole or local expansion of one box to that of another in the computational domain. In kernel-independent methods, translation operators translate equivalent weights or densities in the same way. Translation operators are the backbone of any fast multipole method because these operations are how we reduce the number of direct computations required to compute the sum.
 
 There are five translation operators. The source-to-multipole (S2M) operator creates a multipole expansion for a given box. The multipole-to-multipole (M2M) operator translates densities in a box to densities in its parent box. The multipole-to-local (M2L) operator translates densities in a box to another box on the same level in the hierarchical tree that divides the computational domain. The local-to-local (L2L) operator translates densities in a box to densities in a child box. Lastly, the local-to-target (L2T) operator computes the far field interaction for the target points using the local expansion.
 
 If a kernel is translation invariant, then translation operators will only differ based on relative position and level in the hierarchical tree. This is due to the the kernel's dependence only on the relative difference between coordinate values, e.g. $(r-r',\theta-\theta',z-z')$. For example, with a translation invariant kernel the $M2L$ operation from the box $[0,1]\times[0,1]$ to $[0,1]\times[2,3]$ would be the same as the operation from $[1,2]\times[1,2]$ to $[1,2]\times[3,4]$. Therefore many translation operators are identical, and need not be computed repeatedly.
 
-On the other hand, if a kernel is translation variant, then every translation operator for every box in the computational domain needs to be computed. None can be reused or recycled as above. This is the case for the modal Green's function, and we need to take this pre-computation into consideration when evaluating a fast method.
+On the other hand, if a kernel is not translation invariant, then every translation operator for every box in the computational domain needs to be computed. None can be reused or recycled as above. This is the case for the modal Green's function, and we need to take this pre-computation into consideration when evaluating a fast method.
 
 Translation operators can be computed without any knowledge of the source or target points, so they are a true pre-computation. The only thing required is a computational domain and choice of a number of level.
 
-\section{Analytic FMM}
-The original FMM \cite{GR} first developed by Greengard and Rokhlin relies on analytic expansions for the potential at some target in the far field due to sources in a box (multipole) and the potential at a target in a box due to all sources in the far field (local). Originally this was done using Legendre polynomials and spherical harmonics to represent the kernel $1/r$.
-
-Our full three-dimensional problem is currently not possible as stated with an analytic FMM since we do not yet have multipole or local expansions for the free-space Green's function for Laplace's equation in three-dimensional cylindrical coordinates.
-
-We can consider an analytic FMM for the series of modal Green's functions, but again the analytic expansion has not been determined. In addition, this method will require the evaluation of special functions. Why is this bad/expensive?
-
-In addition, a problem arises when we have many sources distributed in close proximity. (why is this the case again?)
-
-\section{Kernel-Independent Methods}
-Ruling out an analytic FMM to accelerate the sum, we're left with kernel-independent methods. These methods can be separated into two categories. First, the not so kernel-independent methods which require that the kernel is the Green's function for some elliptic partial differential equation. The most well-known method of this type is the kernel-independent FMM (KIFMM), which was proposed by Ying, Biros, and Zorin. Second are methods which work with any smooth kernel and require only its evaluation at some points. The most well-known method of this type is the black-box FMM (bbFMM) by Fong and Darve.
-
-%In the first type of method, we want to use the properties of the PDE to construct translation operators. Consider an exterior Dirichlet problem. There are three approaches we can use to represent the potential in the far-field: 1) use Green's third identity -- differential equations, 2) use integral equations, or 3) create equivalent densities and potentials. 3) is the choice of YBZ, and further detail of the construction of these operators is explored below. Essentially, an algorithm of this type depends on the source to multipole translation, and choice of a discretization scheme.
-
 \section{The kernel-independent FMM}
-Rather than using analytic multipole and local expansions like in the FMM, the KIFMM substitutes upward and downward equivalent densities that lie on surfaces surrounding each box in the hierarchical tree to represent the potential generated by sources in that box and the potential in that box due to sources in the far-field. The idea is that to a target box in the far field, the potential due to the source charges in the box is the same as the potential due to these equivalent densities. The target box can't tell the difference between the real source densities and the equivalent densities. This allows us to construct an efficient FMM that only requires kernel evaluations. The KIFMM is also relatively easy to implement, since in general it applies to an arbitrary kernel that is the fundamental solution of some elliptic PDE. To change the kernel in the original FMM, one would need to develop analytic multipole and local expansions.
+Rather than using analytic multipole and local expansions like in the FMM, the KIFMM substitutes upward and downward equivalent densities that lie on surfaces surrounding each box in the hierarchical tree to represent the potential generated by sources in that box and the potential in that box due to sources in the far-field. This method relies on Green's third identity. The idea is that to a target box in the far field, the potential due to the source charges in the box is the same as the potential due to these equivalent densities. The target box can't tell the difference between the real source densities and the equivalent densities. This allows us to construct an efficient FMM that only requires kernel evaluations. The KIFMM is also relatively easy to implement, since in general it applies to an arbitrary kernel that is the fundamental solution of some elliptic PDE. To change the kernel in the original FMM, one would need to develop analytic multipole and local expansions.
 
-The original KIFMM paper explored three data sets for the 3D case: densities distributed on the unit sphere, densities distributed uniformly on the unit cube, and densities distributed at the eight corners of the unit cube. While the 3D KIFMM may be able to handle densities distributed on surfaces of revolution, \cite{YBZ} explains that the implementation is difficult because rather than using spherical equivalent surfaces to extrapolate from the circular surfaces used in the 2D case, we need to use cubes.
+The original KIFMM paper explored three data sets for the 3D case: densities distributed on the unit sphere, densities distributed uniformly on the unit cube, and densities distributed at the eight corners of the unit cube.
 
-Due to this difficulty, the technique described earlier and covered at length in \cite{YYM} is used -- replacing the 3D integral equations required by the 3D KIFMM with their Fourier representations, sequences of 2D integral equations. In this way, the 3D KIFMM implementation is avoided in favor of repeatedly applying the 2D KIFMM. As mentioned earlier, this strategy is currently only applicable to the modal Green's function for Laplace's equation because we can analytically determine its Fourier modes.
+Due to the difficulty required in the implementation of the 3D KIFMM, the technique described earlier and covered at length in \cite{YYM} is used -- replacing the 3D integral equations required by the 3D KIFMM with their Fourier representations, sequences of 2D integral equations. In this way, the 3D KIFMM implementation is avoided in favor of repeatedly applying the 2D KIFMM. As mentioned earlier, this strategy is currently only applicable to the modal Green's function for Laplace's equation because we can analytically determine its Fourier modes.
 
-Martinsson, Hao, and Young explored this application to modal green's functions in \cite{YYM}. However, as aforementioned, the pre-computation is not optimal because of the translation operators for the translation variant kernel. In an attempt to reduce this pre-computation, we tried to find constant proportionality between the operators. For example, perhaps the $M2L$ from $[0,1]\times[0,1]$ to $[2,3]\times[0,1]$ is some explicit portion of the translation from $[0,1]\times[0,1]$ to $[3,4]\times[0,1]$. However, these attempts failed and indeed we wouldn't expect this relationship to exist because it doesn't exist in the kernel, and the translation operators in the KIFMM are simply kernel evaluations. So ever translation operator for every box on every level would need to be pre-computed. This is relatively expensive because every operator involves the evaluation of the kernel.
+Martinsson, Hao, and Young explored this application to modal green's functions in \cite{YYM}. However, as aforementioned, the pre-computation is not optimal because of the translation operators for the not translation invariant kernel. In an attempt to reduce this pre-computation, we tried to find constant proportionality between the operators. For example, perhaps the $M2L$ from $[0,1]\times[0,1]$ to $[2,3]\times[0,1]$ is some explicit portion of the translation from $[0,1]\times[0,1]$ to $[3,4]\times[0,1]$. However, these attempts failed and indeed we wouldn't expect this relationship to exist because it doesn't exist in the kernel, and the translation operators in the KIFMM are simply kernel evaluations. So ever translation operator for every box on every level would need to be pre-computed. This is relatively expensive because every operator involves the evaluation of the kernel.
 
-It's important to note that since the translation operators are kernel evaluations, they will also differ for each mode of the Fourier expansion of the Green's function since we're essentially using a different kernel. The full algorithm will require pre-computation $2N+1$ times the number of operators required for the computational domain, where $N$ is the truncation parameter for the Fourier expansion.
+It's important to note that since the translation operators are kernel evaluations, they will also differ for each mode of the Fourier expansion of the Green's function since we're essentially using a different kernel. The full algorithm will require pre-computation $2M+1$ times the number of operators required for the computational domain, where $M$ is the truncation parameter for the Fourier expansion.
 
 \section{The black-box FMM}
-The black-box FMM is a Chebyshev interpolation-based $\mathcal{O}(P)$ algorithm for non-oscillatory kernels. In general, this algorithm uses equivalent densities in each box placed at Chebyshev nodes. In this section, we consider this scheme to quickly compute this sum for each modal Green's function
+The black-box FMM is a Chebyshev interpolation-based $\mathcal{O}(N)$ algorithm for non-oscillatory kernels. In general, this algorithm uses equivalent densities in each box placed at Chebyshev nodes. In this section, we consider this scheme to quickly compute this sum for each modal Green's function
 \begin{align}
-f_n(\mathbf{x}_i)=\sum_{j=1}^P s_n(\mathbf{x}_i,\mathbf{y}_j)\sigma_{n,j}
+f_n(\mathbf{x}_i)=\sum_{j=1}^N s_n(\mathbf{x}_i,\mathbf{y}_j)\sigma_{n,j}
 \end{align}
 for targets $\mathbf{x}_i$ and sources $\mathbf{y}_j$.
 
-The bbFMM is best for complicated analytic kernels that may not conform well to the FMM or KIFMM since it only requires a smooth kernel, and only uses the evaluation of the kernel at specific points. Another advantage for this method is that it has a small pre-computation even for large systems. The pre-computation for any kernel is $\mathcal{O}(P)$. This is crucial for this problem since the pre-computation for the KIFMM was expensive because of the translation variant kernel. Another important advantage for the bbFMM is that only the $M2L$ operation requires an evaluation of the kernel. This means that the other four operations do not change based on which mode of the Fourier expansion of the Green's function, so they need not be computed separately for each mode.
+The bbFMM is best for complicated analytic kernels that may not conform well to the FMM or KIFMM since it only requires a smooth kernel, and only uses the evaluation of the kernel at specific points. Another advantage for this method is that it has a small pre-computation even for large systems. The pre-computation for any kernel is $\mathcal{O}(N)$. This is crucial for this problem since the pre-computation for the KIFMM was expensive because of the not translation invariant kernel. Another important advantage for the bbFMM is that only the $M2L$ operation requires an evaluation of the kernel. This means that the other four operations do not change based on which mode of the Fourier expansion of the Green's function, so they need not be computed separately for each mode.
 
 The full method combines the methods of SVD compression from...
 \begin{align}
@@ -186,29 +193,29 @@ s_n(\mathbf{x},\mathbf{y})=\sum_i\sum_m s_n(\mathbf{x}_i,\mathbf{y}_m)w_i(\mathb
 
 First we need to define the Chebyshev polynomial
 \begin{align}
-T_k(x)=\cos(k\arccos(\frac{2}{b-a}(x-\frac{a+b}{2})))
+T_k(x)=\cos\bigg(k\arccos\bigg(\frac{2}{b-a}\bigg(x-\frac{a+b}{2}\bigg)\bigg)\bigg)
 \end{align}
 on $[a,b]$. The Chebyshev nodes, which are the roots of the Chebyshev polynomial, on $[a,b]$ are
 \begin{align}
-x=\frac{a+b}{2}+\frac{b-a}{2}\cos(\frac{2i-1}{2k}\pi)\mbox{ for }i=1,\dots,k.
+x=\frac{a+b}{2}+\frac{b-a}{2}\cos\bigg(\frac{2i-1}{2k}\pi\bigg)\mbox{ for }i=1,\dots,k.
 \end{align}
 in one dimension. For two dimensions, consider two axes $r$ and $z$, and the Chebyshev nodes on each interval. The nodes in the box these intervals create are all of the possible $(r,z)$ pairs of the nodes in each respective interval, making $k^2$ nodes in each box.
 
-From the Chebyshev polynomial Fong and Darve derive the interpolation functions
+From the Chebyshev polynomial Fong and Darve derive the optimal (why?) interpolation functions
 \begin{align}
-R_k(\mathbf{x},\mathbf{y}) = (\frac{1}{k} + \frac{2}{k}\sum_{i=1}^{k-1}T_k(x_1)T_k(y_1))(\frac{1}{k} + \frac{2}{k}\sum_{i=1}^{k-1}T_k(x_2)T_k(y_2))
+R_k(\mathbf{x},\mathbf{y}) = \bigg(\frac{1}{k} + \frac{2}{k}\sum_{i=1}^{k-1}T_k(r)T_k(z)\bigg)\bigg(\frac{1}{k} + \frac{2}{k}\sum_{i=1}^{k-1}T_k(r')T_k(z')\bigg)
 \end{align}
-for $\mathbf{x}=(x_1,x_2)$ and $\mathbf{y}=(y_1,y_2)$.
+for $\mathbf{x}=(r,z)$ and $\mathbf{y}=(r',z')$.
 
 From there we use a low-rank approximation for the modal kernel given by
 \begin{align}
-s_n(\mathbf{x},\mathbf{y}) = \sum_{\mathbf{l}=1}^k\sum_{\mathbf{m}=1}^k s_n(\mathbf{\overline{x}}_{\mathbf{l}},\mathbf{\overline{y}}_{\mathbf{m}})R_k(\mathbf{\overline{x}}_{\mathbf{l}},\mathbf{x})R_k(\mathbf{\overline{y}}_{\mathbf{m}},\mathbf{y})
+s_n(\mathbf{x},\mathbf{y}) = \sum_{l_1=1}^k\sum_{l_2=1}^k\sum_{m_1=1}^k\sum_{m_2=1}^k s_n(\mathbf{\overline{x}}_{l_1,l_2},\mathbf{\overline{y}}_{m_1,m_2})R_k(\mathbf{\overline{x}}_{l_1,l_2},\mathbf{x})R_k(\mathbf{\overline{y}}_{m_1,m_2},\mathbf{y})
 \end{align}
 to approximate the sum
 \begin{align}
-f_n(\mathbf{x}_i)=\sum_{\mathbf{l}=1}^k R_k(\mathbf{\overline{x}}_{\mathbf{l}},\mathbf{x}_i) \sum_{\mathbf{m}=1}^k s_n(\mathbf{\overline{x}}_{\mathbf{l}},\mathbf{\overline{y}}_{\mathbf{m}}) \sum_{j=1}^P \sigma_{n,j}R_k(\mathbf{\overline{y}}_{\mathbf{m}},\mathbf{y}_j)
+f_n(\mathbf{x}_i)=\sum_{l_1=1}^k \sum_{l_2=1}^k R_k(\mathbf{\overline{x}}_{l_1,l_2},\mathbf{x}_i) \sum_{m_1=1}^k \sum_{m_2=1}^k s_n(\mathbf{\overline{x}}_{l_1,l_2},\mathbf{\overline{y}}_{m_1,m_2}) \sum_{j=1}^N \sigma_{n,j}R_k(\mathbf{\overline{y}}_{m_1,m_2},\mathbf{y}_j)
 \end{align}
-where $P$ is the number of source points, $k^2$ is the number of Chebyshev nodes in each box, $\mathbf{y}_j$ are the source points, $\mathbf{x}_i$ are the target points, $\mathbf{\overline{x}}_{\mathbf{l}}$ are the Chebyshev nodes in the target box, and $\mathbf{\overline{y}}_{\mathbf{m}}$ are the Chebyshev nodes in the source box.
+where $N$ is the number of source points, $k^2$ is the number of Chebyshev nodes in each box, $\mathbf{y}_j$ are the source points, $\mathbf{x}_i$ are the target points, $\mathbf{\overline{x}}_{l_1,l_2}$ are the Chebyshev nodes in the target box, and $\mathbf{\overline{y}}_{m_1,m_2}$ are the Chebyshev nodes in the source box.
 
 This low-rank approximation yields the translation operators for this method. For a given mode $n$, we detail each operation.
 \subsection{S2M}
@@ -245,23 +252,42 @@ Notice that the $S2M$, $M2M$, $L2L$, and $L2T$ translation operators in this sce
 
 In addition, for each mode $n$, the weights $W^{n,B}_{m_1,m_2}$ can be represented by a matrix with $k^2$ rows and $N$, the truncation parameter discussed earlier chosen for the Fourier representation, columns. Therefore these translation operations are just matrix-matrix multiplications which can be performed quickly in practice.
 
-The full bbFMM also reduces the cost of the $M2L$ operation by using SVD compression. However, with a translation variant kernel some of these operations may not save anything since recyclable transfer vectors on each level was crucial to their argument.
+%HIGHLIGHT
+\subsection{Vectorization}
+Vectorization of the bbFMM for modal Green's function. A key advantage of this method over the KIFMM is the fast pre-computation and indeed fast application of these operators. Not only can they all be computed at once since the interpolation function does not depend on the Fourier mode $n$, but the operators can be applied quickly as well. To see this, consider that $\sigma_{n,j}$ is an $N\times (2M+1)$ matrix, where each row is the source point and each column is a Fourier mode, which we can apply via BLAS3 matrix-matrix multiplication to the interpolation function $R_k$. $W_{m_1,m_2}^{n,B}$, too, is then simply a matrix for each box with rows representing each Chebyshev node and each column representing a Fourier mode. We can now do all of these operations for EVERY MODE at once! This is a huge advantage over the KIFMM where we would need to separately complete the entire pre-computation and application process $2M+1$ times for each node.
+\\
 
-\section{Numerical Result}
-I feel like there should be some numerical result, but perhaps it's too early for this and should just include appendix with an explanation of the test files. One thing the bbFMM authors did was the pre-computation time for all necessary operators over multiple computational domains with different numbers of levels. In particular, we fix the root level of the computational domain as the box $[0,1]\times[0,1]$ in two-dimensional $(r,z)$-space, and vary the number of levels in the computational domain, and the number of Chebyshev nodes in each box. Note that the number of Chebyshev nodes is the same for every box, regardless of size or level.
+$W^n=R_k \sigma_n$\\
+
+$W_{all} = R_k \sigma_{all}$\\
+
+The $M2L$ operation deserves a little special attention since it does depend on the kernel $s_n$ and is the most expensive pre-computation and operation. The computation of $s_n$, however, generates each of the $2M+1$ Fourier modes all at once using the Fast Fourier Transform (FFT).
+
+\begin{align}
+s_n = \int_0^{2\pi} \frac{1}{4\pi|\mathbf{x}-\mathbf{y}|}e^{-in\theta'}d\theta'
+\end{align}
+
+for x far from y, use discrete FFT on |x-y| to get $s_n$ for M2L. for x near y, use Johan Helsing or Martinsson and Miller's algorithm to compute $Q_{n-1/2}$, $Q_{n+1/2}$, $Q_{n+3/2}$, etc.
+
+As previously mentioned, the evaluation of $s_n$ at the Chebyshev nodes can be accelerated using any of the techniques described in Abdelgameed et al.
+
+The full bbFMM also reduces the cost of the $M2L$ operation by using SVD compression. However, with a not translation invariant kernel some of these operations may not save anything since recyclable transfer vectors on each level was crucial to their argument.
+
+%\section{Numerical Result}
+%I feel like there should be some numerical result, but perhaps it's too early for this and should just include appendix with an explanation of the test files. One thing the bbFMM authors did was the pre-computation time for all necessary operators over multiple computational domains with different numbers of levels. In particular, we fix the root level of the computational domain as the box $[0,1]\times[0,1]$ in two-dimensional $(r,z)$-space, and vary the number of levels in the computational domain, and the number of Chebyshev nodes in each box. Note that the number of Chebyshev nodes is the same for every box, regardless of size or level.
 
 \section{Future Work}
 Complete the bbFMM algorithm for modal Green's function.
 
 \begin{appendices}
 \section{Legend}
+$N$ is the number of source points in the computational domain
+
 $n$ is the index for each Fourier mode of the Green's function
 
-$N$ is the truncation parameter for the Fourier expansion of the Green's function
+$M$ is the truncation parameter for the Fourier expansion of the Green's function
 
-$P$ is the number of source points in the computational domain
-
-
+$k$ is the number of Chebyshev nodes in each interval
 
 \section{Implementation and Testing}
 Currently, we are able to produce and have tested all equivalent densities and translation operators with Python programs for the Chebyshev interpolation-based FMM. However, we are just using the kernel, $\log|\mathbf{x}-\mathbf{y}|$, instead of the modal Green's function for Laplace's equation. These functions are very similar, though, so we expect these tests to succeed with the modal Green's function as well.
@@ -294,6 +320,9 @@ $$W^A_{m_1,m_2}= \sum_{i}\sum_{m'_1}\sum_{m'_2} R_k(\mathbf{\overline{x}}^{A}_{m
 \item Compare the weight at each node with the computation in step $2$.
 \end{enumerate}
 
+$\mathbf{2D-M2L.py}$
+
+$\mathbf{2D-L2L.py}$
 
 $\mathbf{2D-M2L+L2L.py}$
 

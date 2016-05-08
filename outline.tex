@@ -32,19 +32,20 @@ z &= z
 \end{align*}
 
 An axisymmetric, or rotationally symmetric, surface $\Gamma$ is one that has symmetry along the $\theta$-axis. The surface $\Gamma$ is obtained by rotating a two-dimensional curve $\gamma$ about the $z$ axis. $\gamma$ is called the generating curve. In particular, $\Gamma=\gamma\times\mathbb{T}$ where $\mathbb{T}$ is the one-dimensional torus (circle) parametrized by $\theta\in(-\pi,\pi]$.
-
+\begin{center}
 \includegraphics[scale=0.5]{bowl3}
-\includegraphics[scale=0.35]{bowl}
-
+\includegraphics[scale=0.5]{bowl}
+\end{center}
 % HIGHLIGHT
 Describe the need for a modal FMM, or FMM for axisymmetric surfaces with difficult geometries. This need stems from the number of discretization points needed to accurately represent complicated generating curves. For example, a circular generating curve is easy to discretize with some finite number of points equally spaced, however for a rectangle, we need more discretization points in the corners. Finally, for something like a thin strip with a circle, we need many many discretization points in this small space. The problem of many sources distributed in close proximity, or clumping.
-
+\begin{center}
 \includegraphics[scale=0.5]{torus}
-\includegraphics[scale=0.35]{circle}
-
+\includegraphics[scale=0.5]{circle}
+\end{center}
+\begin{center}
 \includegraphics[scale=0.5]{pipe2}
-\includegraphics[scale=0.35]{rect}
-
+\includegraphics[scale=0.5]{rect}
+\end{center}
 Density distributions on axisymmetric surfaces have many applications. The problem of electromagnetic scattering by a surface of revolution has radar, geophysical exploration, and acoustics applications. This type of problem relies precisely on creating a fast algorithm for an axisymmetric density distribution.
 
 \section{Statement of problem}

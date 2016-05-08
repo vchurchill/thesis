@@ -11,6 +11,9 @@
 \usepackage{pgfplots}
 \pgfplotsset{width=6cm,compat=1.9}
 \usepackage[toc,page]{appendix}
+\usepackage{graphicx}
+\graphicspath{ {images/} }
+
 \title{An FMM for the Modal Green's Function}
 \date{May 4, 2016}
 
@@ -30,18 +33,22 @@ z &= z
 
 An axisymmetric, or rotationally symmetric, surface $\Gamma$ is one that has symmetry along the $\theta$-axis. The surface $\Gamma$ is obtained by rotating a two-dimensional curve $\gamma$ about the $z$ axis. $\gamma$ is called the generating curve. In particular, $\Gamma=\gamma\times\mathbb{T}$ where $\mathbb{T}$ is the one-dimensional torus (circle) parametrized by $\theta\in(-\pi,\pi]$.
 
+\includegraphics[scale=0.5]{bowl3}
+\includegraphics[scale=0.35]{bowl}
+
 % HIGHLIGHT
 Describe the need for a modal FMM, or FMM for axisymmetric surfaces with difficult geometries. This need stems from the number of discretization points needed to accurately represent complicated generating curves. For example, a circular generating curve is easy to discretize with some finite number of points equally spaced, however for a rectangle, we need more discretization points in the corners. Finally, for something like a thin strip with a circle, we need many many discretization points in this small space. The problem of many sources distributed in close proximity, or clumping.
+
+\includegraphics[scale=0.5]{torus}
+\includegraphics[scale=0.35]{circle}
+
+\includegraphics[scale=0.5]{pipe2}
+\includegraphics[scale=0.35]{rect}
 
 Density distributions on axisymmetric surfaces have many applications. The problem of electromagnetic scattering by a surface of revolution has radar, geophysical exploration, and acoustics applications. This type of problem relies precisely on creating a fast algorithm for an axisymmetric density distribution.
 
 \section{Statement of problem}
 Consider $N$ source points $\mathbf{y}_j=(r'_j,\theta'_j,z'_j)$ distributed on this surface $\Gamma$, with each assigned a charge $\sigma_j$. We want to compute the potential $f$ at target points $\mathbf{x}_i=(r_i,\theta_i,z_i)$ also on $\Gamma$ due to the source densities.  In practice, the same set of points act as both sources and targets. The potential is represented by the sum
-% in the continuous case, the integral equation
-%\begin{align}
-%f(\mathbf{x}) &= \int_\Gamma K(\mathbf{x},\mathbf{y})\sigma(\mathbf{y}) d\mathbf{y} &\mathbf{y}\in\Gamma
-%\end{align}
-%that we discretize
 \begin{align}
 f(\mathbf{x}_i) = \sum_{j=1}^N K(\mathbf{x}_i,\mathbf{y}_j)\sigma_j
 \end{align}

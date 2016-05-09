@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015) (preloaded format=pdflatex 2015.5.24)  9 MAY 2016 01:39
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015) (preloaded format=pdflatex 2015.5.24)  9 MAY 2016 09:58
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -731,31 +731,41 @@ Package pdftex.def Info: rect.png used on input line 59.
 {/usr/local/texlive/2015/texmf-var/fonts/map/pdftex/updmap/pdftex.map} <./bowl3
 .jpg> <./bowl.png>] [2 <./torus.jpg> <./circle.png> <./pipe2.jpg> <./rect.png>]
  [3] [4]
-LaTeX Font Info:    Try loading font information for OMS+cmr on input line 154.
+LaTeX Font Info:    Try loading font information for OMS+cmr on input line 150.
 
 
 (/usr/local/texlive/2015/texmf-dist/tex/latex/base/omscmr.fd
 File: omscmr.fd 2014/09/29 v2.5h Standard LaTeX font definitions
 )
 LaTeX Font Info:    Font shape `OMS/cmr/m/n' in size <10.95> not available
-(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 154.
+(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 150.
  [5] [6] [7]
 [8] [9] [10] [11] [12] [13]
-Underfull \hbox (badness 10000) in paragraph at lines 325--327
+Underfull \hbox (badness 10000) in paragraph at lines 321--323
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 328--329
+Underfull \hbox (badness 10000) in paragraph at lines 324--325
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 330--331
+Underfull \hbox (badness 10000) in paragraph at lines 326--327
 
  []
 
 [14] [15]
+Underfull \hbox (badness 10000) in paragraph at lines 367--368
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 369--370
+
+ []
+
+
 Underfull \hbox (badness 10000) in paragraph at lines 371--372
 
  []
@@ -766,37 +776,27 @@ Underfull \hbox (badness 10000) in paragraph at lines 373--374
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 375--376
+Underfull \hbox (badness 10000) in paragraph at lines 380--381
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 377--378
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 384--385
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 387--388
+Underfull \hbox (badness 10000) in paragraph at lines 383--384
 
  []
 
 [16]
-Underfull \hbox (badness 10000) in paragraph at lines 391--392
+Underfull \hbox (badness 10000) in paragraph at lines 387--388
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 404--405
+Underfull \hbox (badness 10000) in paragraph at lines 400--401
 
  []
 
 [17]
-Underfull \hbox (badness 10000) in paragraph at lines 419--420
+Underfull \hbox (badness 10000) in paragraph at lines 415--416
 
  []
 
@@ -804,7 +804,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 419--420
 Here is how much of TeX's memory you used:
  21667 strings out of 493089
  546806 string characters out of 6134842
- 723914 words of memory out of 5000000
+ 723915 words of memory out of 5000000
  24758 multiletter control sequences out of 15000+600000
  12925 words of font info for 48 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
@@ -827,7 +827,7 @@ b></usr/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb>
 </usr/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb><
 /usr/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.p
 fb>
-Output written on outline.pdf (19 pages, 311737 bytes).
+Output written on outline.pdf (19 pages, 311882 bytes).
 PDF statistics:
  150 PDF objects out of 1000 (max. 8388607)
  99 compressed objects within 1 object stream

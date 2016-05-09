@@ -66,15 +66,11 @@ Consider $N$ source points $\mathbf{y}_j=(r'_j,\theta'_j,z'_j)$ distributed on t
 \begin{align}
 f(\mathbf{x}_i) = \sum_{j=1}^N K(\mathbf{x}_i,\mathbf{y}_j)\sigma_j
 \end{align}
-where $K(\mathbf{x},\mathbf{y})$ is a kernel, typically the Green's function of the partial differential equation that describes the potential between two points in the domain. In particular, we are interested in the free-space (without boundary conditions) Green's function for Laplace's equation:
+where $K(\mathbf{x},\mathbf{y})$ is a kernel, typically the Green's function of the partial differential equation that describes the potential between two points in the domain. In particular, we are interested in the free-space (without boundary conditions) Green's function for Laplace's equation $\Delta u = 0$:
 \begin{align}
 K(\mathbf{x},\mathbf{y}) = \frac{1}{4\pi |\mathbf{x}-\mathbf{y}|}
 \end{align}
-%This is specifically for charges governed by a Dirichlet problem with Laplace's equation. On a three-dimensional surface $\Gamma$,
-%\begin{align}
-%\Delta u &= 0 \mbox{ in }\Omega\\
-%u &= f \mbox{ on }\Gamma
-%\end{align}
+
 The goal is to construct a fast summation method for equation $(1)$ that takes advantage of the rotational symmetry of $\Gamma$.
 
 \section{Modal Green's Function}

@@ -12,53 +12,57 @@
 \@writefile{toc}{\contentsline {subsection}{\numberline {3.1}Fourier representation of 3D integral equations}{4}}
 \citation{YYM}
 \@writefile{toc}{\contentsline {section}{\numberline {4}Fast multipole methods}{5}}
-\citation{GR}
 \@writefile{toc}{\contentsline {subsection}{\numberline {4.1}Hierarchical tree structure}{6}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.2}Analysis-based FMMs}{6}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.3}Kernel-independent methods}{7}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.4}Translation operators}{8}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.5}General multilevel algorithm structure}{9}}
+\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces The hierarchical partitioning of the computational domain, levels $0$ through $3$, with sources and targets in blue.}}{6}}
+\newlabel{fig:4}{{4}{6}}
+\citation{GR}
+\@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces The blue boxes make up the interaction list of the red box.}}{7}}
+\newlabel{fig:5}{{5}{7}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.2}Analysis-based FMMs}{7}}
+\citation{YBZ}
+\citation{FD}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.3}Kernel-independent methods}{8}}
+\@writefile{lof}{\contentsline {figure}{\numberline {6}{\ignorespaces The red circle is the upward equivalent surface with dark red discretization points. The blue circle is the upward check surface with light blue discretization points.}}{9}}
+\newlabel{fig:6}{{6}{9}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.4}Translation operators}{9}}
+\@writefile{lof}{\contentsline {figure}{\numberline {7}{\ignorespaces We use this figure to describe relationships between translation operators.}}{11}}
+\newlabel{fig:7}{{7}{11}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.5}General multilevel algorithm structure}{11}}
 \citation{YYM}
-\@writefile{toc}{\contentsline {section}{\numberline {5}The KIFMM}{10}}
-\citation{CGR}
-\citation{YBZ}
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.1}Application}{11}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.2}Full algorithm}{11}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {5.2.1}Equivalent densities}{12}}
-\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces Left: The upward check (blue) and equivalent (red) surfaces of a box used to compute the upward equivalent density due to source densities (black) in the box. Right: The downward check (blue) and equivalent (red) surfaces of a box used to compute the downward equivalent density due to sources densities (black) in the far field on the box. In the algorithm, we never actually directly compute a downward equivalent density.}}{12}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {5.2.2}Translation Operators}{12}}
-\@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces The upward equivalent density due to the source densities (black) in the child box computed from the upward equivalent (red) and check (blue) surfaces of the child box is translated to the upward equivalent density of the parent box, checking against its upward check (blue) and equivalent (red) surfaces.}}{13}}
-\citation{YBZ}
-\@writefile{lof}{\contentsline {figure}{\numberline {6}{\ignorespaces The upward equivalent density due to the source densities (black) in a box computed from the upward equivalent (red) and check (blue) surfaces of the child box is translated to the downward equivalent density of another box on the same level, checking against its upward check (blue) and equivalent (red) surfaces.}}{14}}
-\@writefile{lof}{\contentsline {figure}{\numberline {7}{\ignorespaces The downward equivalent density due to the source densities (black) in a parent box computed from the upward equivalent (red) and check (blue) surfaces of the parent box is translated to the downward equivalent density of a child box, checking against its upward check (blue) and equivalent (red) surfaces.}}{14}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {5.2.3}Discretization details}{14}}
-\@writefile{toc}{\contentsline {section}{\numberline {6}The black-box FMM}{15}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {6.1}S2M}{16}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {6.2}M2M}{17}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {6.3}M2L}{17}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {6.4}L2L}{17}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {6.5}L2T}{17}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.6}Translations in the KIFMM}{12}}
+\@writefile{toc}{\contentsline {section}{\numberline {5}The black-box FMM}{13}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.1}Advantages}{13}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.2}Vectorization}{13}}
+\@writefile{lof}{\contentsline {figure}{\numberline {8}{\ignorespaces The bbFMM uses equivalent densities in the form of weights at the Chebyshev nodes in each box to represent the source densities. Here this is shown for $n^2=100$ Chebyshev nodes in red representing source densities in blue.}}{14}}
+\newlabel{fig:8}{{8}{14}}
+\citation{ZGR}
+\citation{MR}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.3}S2M}{16}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.4}M2M}{16}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.5}M2L}{16}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.6}L2L}{16}}
+\citation{FD}
+\citation{A}
+\citation{CGMR}
+\citation{FD}
+\citation{MR}
 \citation{A}
 \citation{VBT}
 \citation{YFC}
-\@writefile{toc}{\contentsline {subsection}{\numberline {6.6}Vectorization}{18}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.7}L2T}{17}}
+\@writefile{toc}{\contentsline {section}{\numberline {6}Conclusion and Future Work}{17}}
 \citation{CGMR}
 \citation{FD}
 \citation{ZGR}
 \citation{MV}
-\@writefile{toc}{\contentsline {section}{\numberline {7}Conclusion and Future Work}{19}}
-\@writefile{toc}{\contentsline {section}{Appendices}{19}}
-\@writefile{toc}{\contentsline {section}{\numberline {A}Legend}{19}}
-\@writefile{toc}{\contentsline {section}{\numberline {B}Implementation and Testing}{19}}
+\@writefile{toc}{\contentsline {section}{Appendices}{18}}
+\@writefile{toc}{\contentsline {section}{\numberline {A}Legend}{18}}
+\@writefile{toc}{\contentsline {section}{\numberline {B}Implementation and Testing}{18}}
 \bibcite{A}{1}
-\bibcite{CGMR}{2}
-\bibcite{FD}{3}
-\bibcite{ZGR}{4}
-\bibcite{GR}{5}
-\bibcite{HMY}{6}
-\bibcite{MV}{7}
-\bibcite{VBT}{8}
-\@writefile{toc}{\contentsline {chapter}{Bibliography}{22}}
-\bibcite{YBZ}{9}
-\bibcite{YYM}{10}
-\bibcite{YFC}{11}
+\bibcite{FD}{2}
+\bibcite{ZGR}{3}
+\bibcite{GR}{4}
+\bibcite{MV}{5}
+\bibcite{YBZ}{6}
+\bibcite{YYM}{7}
+\@writefile{toc}{\contentsline {chapter}{Bibliography}{21}}

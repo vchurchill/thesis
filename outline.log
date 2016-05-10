@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015) (preloaded format=pdflatex 2015.5.24)  10 MAY 2016 01:53
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015) (preloaded format=pdflatex 2015.5.24)  10 MAY 2016 18:32
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -731,100 +731,169 @@ Package pdftex.def Info: rect.png used on input line 58.
 {/usr/local/texlive/2015/texmf-var/fonts/map/pdftex/updmap/pdftex.map} <./bowl3
 .jpg> <./bowl.png>] [2 <./torus.jpg> <./circle.png> <./pipe2.jpg> <./rect.png>]
  [3] [4] [5]
-[6] [7]
-LaTeX Font Info:    Try loading font information for OMS+cmr on input line 191.
+<b0.png, id=48, 570.13pt x 574.145pt>
+File: b0.png Graphic file (type png)
+ <use b0.png>
+Package pdftex.def Info: b0.png used on input line 148.
+(pdftex.def)             Requested size: 142.53215pt x 143.53589pt.
+
+<b1.png, id=49, 570.13pt x 574.145pt>
+File: b1.png Graphic file (type png)
+ <use b1.png>
+Package pdftex.def Info: b1.png used on input line 149.
+(pdftex.def)             Requested size: 142.53215pt x 143.53589pt.
+
+<b2.png, id=50, 570.13pt x 574.145pt>
+File: b2.png Graphic file (type png)
+ <use b2.png>
+Package pdftex.def Info: b2.png used on input line 150.
+(pdftex.def)             Requested size: 142.53215pt x 143.53589pt.
+
+<b3.png, id=51, 570.13pt x 574.145pt>
+File: b3.png Graphic file (type png)
+ <use b3.png>
+Package pdftex.def Info: b3.png used on input line 151.
+(pdftex.def)             Requested size: 142.53215pt x 143.53589pt.
+ [6 <./b0.png> <./b1.png> <./b2.png> <./b3.png>] <intlist.png, id=59, 570.13pt 
+x 574.145pt>
+File: intlist.png Graphic file (type png)
+
+<use intlist.png>
+Package pdftex.def Info: intlist.png used on input line 160.
+(pdftex.def)             Requested size: 142.53215pt x 143.53589pt.
+ [7 <./intlist.png>] [8]
+<eqdens1.png, id=70, 890.32625pt x 896.34875pt>
+File: eqdens1.png Graphic file (type png)
+ <use eqdens1.png>
+Package pdftex.def Info: eqdens1.png used on input line 193.
+(pdftex.def)             Requested size: 222.58101pt x 224.08664pt.
+ [9 <./eqdens1.png>]
+LaTeX Font Info:    Try loading font information for OMS+cmr on input line 206.
 
  (/usr/local/texlive/2015/texmf-dist/tex/latex/base/omscmr.fd
 File: omscmr.fd 2014/09/29 v2.5h Standard LaTeX font definitions
 )
 LaTeX Font Info:    Font shape `OMS/cmr/m/n' in size <10.95> not available
-(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 191.
- [8]
-[9] [10]
+(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 206.
 
-LaTeX Warning: Citation `CGR' on page 11 undefined on input line 247.
+<M2L.png, id=75, 570.13pt x 574.145pt>
+File: M2L.png Graphic file (type png)
+ <use M2L.png>
+Package pdftex.def Info: M2L.png used on input line 227.
+(pdftex.def)             Requested size: 142.53215pt x 143.53589pt.
 
-[11] [12] [13]
-Overfull \hbox (6.83925pt too wide) in paragraph at lines 328--329
-[]\OT1/cmr/m/n/10.95 Once we have these up-ward and down-ward equiv-a-lent den-
-si-ties for ev-ery $\OML/cmm/m/it/10.95 n \OMS/cmsy/m/n/10.95 2 \OT1/cmr/m/n/10
-.95 [\OMS/cmsy/m/n/10.95 ^^@\OML/cmm/m/it/10.95 N; [] ; N\OT1/cmr/m/n/10.95 ]$,
+
+LaTeX Warning: `h' float specifier changed to `ht'.
+
+[10] [11 <./M2L.png>] [12] <b0wChebynodes.png, id=86, 570.13pt x 574.145pt>
+File: b0wChebynodes.png Graphic file (type png)
+
+<use b0wChebynodes.png>
+Package pdftex.def Info: b0wChebynodes.png used on input line 265.
+(pdftex.def)             Requested size: 142.53215pt x 143.53589pt.
+
+
+LaTeX Warning: `h' float specifier changed to `ht'.
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 271--273
 
  []
 
-[14] [15] [16] [17]
-Underfull \hbox (badness 10000) in paragraph at lines 424--426
+[13]
+Underfull \hbox (badness 10000) in paragraph at lines 274--275
 
  []
 
 
+Underfull \hbox (badness 10000) in paragraph at lines 276--277
+
+ []
+
+[14 <./b0wChebynodes.png>]
+
+LaTeX Warning: Citation `MR' on page 15 undefined on input line 300.
+
+[15] [16]
+
+LaTeX Warning: Citation `CGMR' on page 17 undefined on input line 352.
+
+
+LaTeX Warning: Citation `MR' on page 17 undefined on input line 352.
+
+
+LaTeX Warning: Citation `VBT' on page 17 undefined on input line 362.
+
+
+LaTeX Warning: Citation `YFC' on page 17 undefined on input line 362.
+
+[17]
+
+LaTeX Warning: Citation `CGMR' on page 18 undefined on input line 386.
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 388--389
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 394--395
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 396--397
+
+ []
+
+[18]
+Underfull \hbox (badness 10000) in paragraph at lines 398--399
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 400--401
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 407--408
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 410--411
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 414--415
+
+ []
+
+[19]
 Underfull \hbox (badness 10000) in paragraph at lines 427--428
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 429--430
+Underfull \hbox (badness 10000) in paragraph at lines 442--443
 
  []
 
-[18]
-Underfull \hbox (badness 10000) in paragraph at lines 470--471
-
- []
-
-[19]
-Underfull \hbox (badness 10000) in paragraph at lines 472--473
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 474--475
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 476--477
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 483--484
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 486--487
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 490--491
-
- []
-
-[20]
-Underfull \hbox (badness 10000) in paragraph at lines 503--504
-
- []
-
-[21]
-Underfull \hbox (badness 10000) in paragraph at lines 518--519
-
- []
-
-[22] [23] (./outline.aux)
+[20] [21] (./outline.aux)
 
 LaTeX Warning: There were undefined references.
 
  ) 
 Here is how much of TeX's memory you used:
- 21668 strings out of 493089
- 546811 string characters out of 6134842
- 724914 words of memory out of 5000000
- 24759 multiletter control sequences out of 15000+600000
+ 21712 strings out of 493089
+ 547342 string characters out of 6134842
+ 723915 words of memory out of 5000000
+ 24795 multiletter control sequences out of 15000+600000
  12925 words of font info for 48 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 55i,16n,83p,1246b,609s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 55i,12n,83p,1320b,609s stack positions out of 5000i,500n,10000p,200000b,80000s
 </usr/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb
 ></usr/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb>
 </usr/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx8.pfb></
@@ -842,10 +911,10 @@ ve/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/local/texlive/
 5/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb></usr/local/texlive/2015/
 texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb></usr/local/texlive/2015/t
 exmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb>
-Output written on outline.pdf (23 pages, 332829 bytes).
+Output written on outline.pdf (21 pages, 450895 bytes).
 PDF statistics:
- 163 PDF objects out of 1000 (max. 8388607)
- 107 compressed objects within 2 object streams
+ 173 PDF objects out of 1000 (max. 8388607)
+ 103 compressed objects within 2 object streams
  0 named destinations out of 1000 (max. 500000)
- 43 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 83 words of extra memory for PDF output out of 10000 (max. 10000000)
 

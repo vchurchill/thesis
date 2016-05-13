@@ -1,0 +1,13 @@
+%\section{Proposed modal FMM}
+%The algorithm follows the same structure as the bbFMM in \cite{FD}, as well as our outline of the general structure of FMMs in $\S4.5$, with a few added steps to deal with moving from 3D to 2D representations, and the vectorization.
+%\begin{enumerate}
+%\item Construct the $2M+1$ required modes of the charges $\sigma_m$ and the modal Green's functions $s_m$ using the FFT, based on a truncation parameter $M$ that corresponds to a given error level.
+%\item For each mode $m$, hierarchically partition the computational domain using a quadtree of boxes with $L_m+1$ levels $0,\dots,L_m$, until each box on the finest level $L$ contains no more than $s$ source points. The parameter $s$ is chosen based on a desired accuracy level $\epsilon$.
+%\item For each box on the finest level $L$, construct an upward equivalent density using the $S2M$ operator.
+%\item For each box on levels $1,\dots,L$, shift the upward equivalent density of the box to the upward equivalent density of the parent box using the $M2M$ operator. Steps $3$ and $4$ are referred to as the upward pass, and together they accumulate upward equivalent densities for every box in the computational domain.
+%\item For each box on levels $2,\dots,L$, compute the contribution to the box's downward equivalent density by translating the upward equivalent densities of boxes in its interaction list using the $M2L$ operator.
+%\item For each box on levels $0,\dots,L-1$, translate the downward equivalent density of the box to the downward equivalent densities of its child boxes using the $L2L$ operator. Steps $4$ and $5$ are referred to as the downward pass, and the summation of these operations creates a downward equivalent density for every box in the computational domain.
+%\item Compute the total far-field contribution for each box by using the $L2T$ operator to evaluate its downward equivalent density at the target points in the box.
+%\item For each box, directly compute the contribution from near-field interactions (sources in near-neighbor boxes) and add them to the far-field contribution. This sum is the total potential at targets in the box.
+%\item Sum the potentials over $\theta$
+%\end{enumerate}

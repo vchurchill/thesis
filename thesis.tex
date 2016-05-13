@@ -36,8 +36,8 @@ An axisymmetric, or rotationally symmetric, surface $\Gamma$ is one that has sym
 \caption{An axisymmetric bowl-shaped surface $\Gamma$ and its generating curve $\gamma$.}
 \label{fig:1}
 \centering
-\includegraphics[scale=0.5]{./images/bowl3}
-\includegraphics[scale=0.5]{./images/bowl}
+%\includegraphics[scale=0.5]{./images/bowl3}
+%\includegraphics[scale=0.5]{./images/bowl}
 \end{figure}
 
 The need for a modal FMM arises from axisymmetric surface density distributions with difficult geometries such that source densities clump together in corners and require a large number of discretization points to be well-represented. For example, a circular generating curve like in Figure \ref{fig:2} is easy to discretize with a relatively low number of equally-spaced points. For a rectangular generating curve like in Figure \ref{fig:3}, however, we need more discretization points in the corners due to this source density clumping. Similarly, for a bowl-shaped surface as in Figure \ref{fig:1}, we would need a lot of discretization points near the vertex of the generating curve.
@@ -45,15 +45,15 @@ The need for a modal FMM arises from axisymmetric surface density distributions 
 \caption{An axisymmetric torus $\Gamma$ and its circular generating curve $\gamma$.}
 \label{fig:2}
 \centering
-\includegraphics[scale=0.5]{./images/torus}
-\includegraphics[scale=0.5]{./images/circle}
+%\includegraphics[scale=0.5]{./images/torus}
+%\includegraphics[scale=0.5]{./images/circle}
 \end{figure}
 \begin{figure}[h]
 \caption{An axisymmetric pipe surface $\Gamma$ and its rectangular generating curve $\gamma$.}
 \label{fig:3}
 \centering
-\includegraphics[scale=0.5]{./images/pipe2}
-\includegraphics[scale=0.5]{./images/rect}
+%\includegraphics[scale=0.5]{./images/pipe2}
+%\includegraphics[scale=0.5]{./images/rect}
 \end{figure}
 
 Density distributions on axisymmetric surfaces have many applications. The problem of electromagnetic scattering by a surface of revolution, for example, has radar, geophysical exploration, and acoustics applications. Fast direct solvers like the one proposed in \cite{HMY} rely precisely on the construction of FMMs for axisymmetric density distributions to help solve problems arising in these fields.
@@ -140,10 +140,10 @@ Before we discuss these two types of FMMs further, we need to define the tree st
 \caption{The hierarchical partitioning of the computational domain, levels $0$ through $3$, with sources and targets in blue.}
 \label{fig:4}
 \centering
-\includegraphics[scale=0.25]{./images/b0}
-\includegraphics[scale=0.25]{./images/b1}
-\includegraphics[scale=0.25]{./images/b2}
-\includegraphics[scale=0.25]{./images/b3}
+%\includegraphics[scale=0.25]{./images/b0}
+%\includegraphics[scale=0.25]{./images/b1}
+%\includegraphics[scale=0.25]{./images/b2}
+%\includegraphics[scale=0.25]{./images/b3}
 \end{figure}
 
 We will use some terminology when discussing the tree, which we must define. A box's parent is the box one level up that contains it. Similarly a box's children are the boxes one level down that it contains. For example in Figure \ref{fig:4}, the only box on level $0$ is the parent of all boxes on level $1$. The near-neighbors of a box are the boxes on the same level with which it shares an edge or corner. In 2D, a box has at most $8$ near-neighbors. If two boxes are not near-neighbors they are called well-separated. A box's far-field is made up of all non-near-neighbor boxes. Lastly, each box has an interaction list, which is made up of boxes on the same level that are children of the parent's near-neighbors but are not near-neighbors. Figure \ref{fig:5} shows the interaction list of a box. Each box in 2D has at-most $27$, $6^2-3^2$, boxes in its interaction list.
@@ -152,7 +152,7 @@ We will use some terminology when discussing the tree, which we must define. A b
 \caption{The blue boxes make up the interaction list of the red box.}
 \label{fig:5}
 \centering
-\includegraphics[scale=0.25]{./images/intlist}
+%\includegraphics[scale=0.25]{./images/intlist}
 \end{figure}
 
 \subsection{Analysis-based FMMs}
@@ -183,7 +183,7 @@ where $\mathbf{y}^{B,u}$ is the equivalent surface and $\mathbf{x}^{B,u}$ is the
 \caption{The red circle is the upward equivalent surface with dark red discretization points. The blue circle is the upward check surface with light blue discretization points.}
 \label{fig:6}
 \centering
-\includegraphics[scale=0.25]{./images/eqdens1}
+%\includegraphics[scale=0.25]{./images/eqdens1}
 \end{figure}
 
 Before we address the application of the KIFMM to an axisymmetric density distribution, we discuss translation operators and the general structure of the FMMs. These two elements need to be covered to understand the inefficiencies of the KIFMM as a basis for the modal FMM in this scenario.
@@ -215,7 +215,7 @@ An important consideration in evaluating a fast method is the cost of pre-comput
 \caption{We use this figure to describe relationships between translation operators.}
 \label{fig:7}
 \centering
-\includegraphics[scale=0.25]{./images/M2L}
+%\includegraphics[scale=0.25]{./images/M2L}
 \end{figure}
 
 On the other hand, for kernels that are not translation invariant in any variable, every translation operator for every box in the computational domain needs to be computed. Every transfer vector is unique, so none of them can be reused or recycled as above. Notice that the modal Green's function is invariant in $z$, but not $r$, so we need to take this more costly pre-computation into consideration. In particular, this is a negative aspect of using the KIFMM for axisymmetric densities, which we discuss in $\S4.6$.
@@ -263,7 +263,7 @@ The advantages of this method for axisymmetric density distributions with diffic
 \caption{The bbFMM uses equivalent densities in the form of weights at the Chebyshev nodes in each box to represent the source densities. This is shown for $n^2=100$ Chebyshev nodes in red representing the source densities in blue.}
 \label{fig:8}
 \centering
-\includegraphics[scale=0.25]{./images/b0wChebynodes}
+%\includegraphics[scale=0.25]{./images/b0wChebynodes}
 \end{figure}
 
 To take a step back and find these Chebyshev nodes, we need to define the $n$th Chebyshev polynomial
@@ -337,20 +337,6 @@ s_m = \int_0^{2\pi} \frac{1}{4\pi|\mathbf{x}-\mathbf{y}|}e^{-im\theta'}d\theta'
 So for $x$ and $y$ well-separated, we can use the discrete FFT on $|x-y|$ to get all modes $s_m$ for use in the M2L.
 
 Once we have the modal Green's functions $s_m$, they can be evaluated efficiently using techniques described in \cite{A}, \cite{VBT}, and others. The full bbFMM in \cite{FD} also includes a reduction of the cost of the $M2L$ operation by using SVD compression, based on results in \cite{CGMR} and \cite{MR}.
-
-%\section{Proposed modal FMM}
-%The algorithm follows the same structure as the bbFMM in \cite{FD}, as well as our outline of the general structure of FMMs in $\S4.5$, with a few added steps to deal with moving from 3D to 2D representations, and the vectorization.
-%\begin{enumerate}
-%\item Construct the $2M+1$ required modes of the charges $\sigma_m$ and the modal Green's functions $s_m$ using the FFT, based on a truncation parameter $M$ that corresponds to a given error level.
-%\item For each mode $m$, hierarchically partition the computational domain using a quadtree of boxes with $L_m+1$ levels $0,\dots,L_m$, until each box on the finest level $L$ contains no more than $s$ source points. The parameter $s$ is chosen based on a desired accuracy level $\epsilon$.
-%\item For each box on the finest level $L$, construct an upward equivalent density using the $S2M$ operator.
-%\item For each box on levels $1,\dots,L$, shift the upward equivalent density of the box to the upward equivalent density of the parent box using the $M2M$ operator. Steps $3$ and $4$ are referred to as the upward pass, and together they accumulate upward equivalent densities for every box in the computational domain.
-%\item For each box on levels $2,\dots,L$, compute the contribution to the box's downward equivalent density by translating the upward equivalent densities of boxes in its interaction list using the $M2L$ operator.
-%\item For each box on levels $0,\dots,L-1$, translate the downward equivalent density of the box to the downward equivalent densities of its child boxes using the $L2L$ operator. Steps $4$ and $5$ are referred to as the downward pass, and the summation of these operations creates a downward equivalent density for every box in the computational domain.
-%\item Compute the total far-field contribution for each box by using the $L2T$ operator to evaluate its downward equivalent density at the target points in the box.
-%\item For each box, directly compute the contribution from near-field interactions (sources in near-neighbor boxes) and add them to the far-field contribution. This sum is the total potential at targets in the box.
-%\item Sum the potentials over $\theta$
-%\end{enumerate}
 
 \section{Conclusion and Future Work}
 We need to complete the full algorithm for the modal FMM based on the bbFMM, fully utilizing the efficient pre-computation, vectorization, and $M2L$ acceleration. Once this is complete, we can test the full implementation.

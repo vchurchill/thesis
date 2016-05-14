@@ -44,36 +44,51 @@ An axisymmetric, or rotationally symmetric, surface $\Gamma$ is obtained by rota
 \caption{An axisymmetric bowl-shaped surface $\Gamma$ and its generating curve $\gamma$.}
 \label{fig:1}
 \centering
-%\includegraphics[scale=0.5]{./images/bowl3}
-%\includegraphics[scale=0.5]{./images/bowl}
+\includegraphics[scale=0.5]{./images/bowl3}
+\includegraphics[scale=0.5]{./images/bowl}
 \end{figure}
 
-Introduce integral equations, quadrature, discretization near corners or geometric singularities.
-%use below
-The need for a modal FMM arises from axisymmetric surface density distributions with difficult geometries such that source densities clump together in corners and require a large number of discretization points to be well-represented. For example, a circular generating curve like in Figure \ref{fig:2} is easy to discretize with a relatively low number of equally-spaced points. For a rectangular generating curve like in Figure \ref{fig:3}, however, we need more discretization points in the corners due to this source density clumping. Similarly, for a bowl-shaped surface as in Figure \ref{fig:1}, we would need a lot of discretization points near the vertex of the generating curve.
+Integral equations are equations using integral operators defines on curves or surfaces. For example, consider the integral equation
+\begin{align}
+f(\mathbf{x}) &= \int_\Gamma K(\mathbf{x},\mathbf{y})\sigma(\mathbf{y})d\mathbf{y} &\mathbf{x},\mathbf{y}\in\Gamma
+\end{align}
+where $f$ is a potential, $K$ is the kernel, and $\sigma$ is a continuous density distribution. Boundary integral equations of this form can be solved for $f$ by using a discretization scheme.
+\begin{align}
+f(\mathbf{x}) = \sum_{j=1}^N K(\mathbf{x},\mathbf{y}_j)\sigma_j &&\mathbf{x},\mathbf{y}_j\in\Gamma
+\end{align}
+The discretization from the integral equation to a discrete sum over a finite number of points requires a numerical quadrature rule for approximating the integral which specifies the location and spacing of, as well as the weights at, the discretization points, as well as interpolation functions (polynomials).
+
+Integral equations over surfaces and curves with corners or geometric singularities are more difficult to discretize than smooth curves and surfaces. For example, a circular generating curve like in Figure \ref{fig:2} is easy to discretize with a relatively low number of equally-spaced points (simple numerical quadrature). For a rectangular generating curve like in Figure \ref{fig:3}, however, we need more discretization points in the corners due to this source density clumping. Similarly, for a bowl-shaped surface as in Figure \ref{fig:1}, we would need a lot of discretization points near the vertex of the generating curve. The need for a modal FMM arises from this difficulty of discretizing axisymmetric boundary-value integral equations with corners or geometric singularities such that source densities clump together and require a large number of discretization points to be well-represented.
 \begin{figure}[h]
 \caption{An axisymmetric torus $\Gamma$ and its circular generating curve $\gamma$.}
 \label{fig:2}
 \centering
-%\includegraphics[scale=0.5]{./images/torus}
-%\includegraphics[scale=0.5]{./images/circle}
+\includegraphics[scale=0.5]{./images/torus}
+\includegraphics[scale=0.5]{./images/circle}
 \end{figure}
 \begin{figure}[h]
 \caption{An axisymmetric pipe surface $\Gamma$ and its rectangular generating curve $\gamma$.}
 \label{fig:3}
 \centering
-%\includegraphics[scale=0.5]{./images/pipe2}
-%\includegraphics[scale=0.5]{./images/rect}
+\includegraphics[scale=0.5]{./images/pipe2}
+\includegraphics[scale=0.5]{./images/rect}
 \end{figure}
 
-Integral equations on axisymmetric surfaces have many applications. The problem of electromagnetic scattering by a surface of revolution, for example, has radar, geophysical exploration, and acoustics applications. Fast direct solvers like the one proposed in \cite{HMY} rely precisely on FMM-type rank observations for axisymmetric density distributions to help solve problems arising in these fields.
+Integral equations on axisymmetric surfaces have many applications. The problem of electromagnetic scattering by a surface of revolution, for example, has radar, geophysical exploration, and acoustics applications. Fast direct solvers, like the one proposed in \cite{HMY}, rely on FMM-type rank observations for axisymmetric density distributions to help solve problems arising in these fields.
 
 The remaining organization of this paper is as follows: $\S2$ states the problem in detail. $\S3$ gives the motivation for using and the derivation of the Fourier representation of a Green's function. $\S4$ gives an overview of fast multipole methods and discusses why some existing techniques are not optimal for geometrically-challenging axisymmetric distributions. $\S5$ details the black-box Chebyshev interpolation-based FMM as a basis for the modal FMM. Lastly, $\S6$ describes future work to construct, implement and test a full modal FMM algorithm.
 
 \section{Statement of problem}
-Motivate using larger potential instead of N-body problem, otherwise points need to be equidistantly spaced in $\theta$.
+Motivate using layer potential instead of N-body problem, otherwise points need to be equidistantly spaced in $\theta$.
 
-Consider $N$ source points $\mathbf{y}_j=(r'_j,\theta'_j,z'_j)$ distributed on an axisymmetric surface $\Gamma$, with each assigned a charge $\sigma_j$. We want to compute the potential $f$ at target points $\mathbf{x}_i=(r_i,\theta_i,z_i)$ also on $\Gamma$ due to the source densities.  In practice, the same set of points act as both sources and targets. The potential is represented by the sum
+Consider the integral equation
+\begin{align}
+f(\mathbf{x}_i) &= \int_\Gamma K(\mathbf{x}_i,\mathbf{y})\sigma(\mathbf{y})d\mathbf{y} &\mathbf{x}_i,\mathbf{y}\in\Gamma
+\end{align}
+
+where $K$ is a layer potential kernel, and $\sigma$ is a given continuous density or charge distribution. We want to compute the potential $f$  at targets $\mathbf{x}_i$ due to sources $\mathbf{y}$.
+
+Consider $N$ source points $\mathbf{y}_j=(r'_j,\theta'_j,z'_j)$ distributed on an axisymmetric surface $\Gamma$, with each assigned a charge $\sigma_j$. In practice, the same set of points act as both sources and targets. The potential is represented by the sum
 \begin{align}
 f(\mathbf{x}_i) = \sum_{j=1}^N K(\mathbf{x}_i,\mathbf{y}_j)\sigma_j
 \end{align}
@@ -82,7 +97,7 @@ where $K(\mathbf{x},\mathbf{y})$ is a kernel, typically the Green's function of 
 K(\mathbf{x},\mathbf{y}) = \frac{1}{4\pi |\mathbf{x}-\mathbf{y}|}
 \end{align}
 
-The goal is to construct a fast summation method for equation $(1)$ that takes advantage of the rotational symmetry of $\Gamma$.
+The goal is to construct a fast summation method for this integral equation that takes advantage of the rotational symmetry of $\Gamma$ using a discretization scheme and numerical quadrature rule that accounts for geometric structures with corners or geometric singularities.
 
 \section{Modal Green's Function}
 
@@ -152,10 +167,10 @@ Before we discuss these two types of FMMs further, we need to define the tree st
 \caption{The hierarchical partitioning of the computational domain, levels $0$ through $3$, with sources and targets in blue.}
 \label{fig:4}
 \centering
-%\includegraphics[scale=0.25]{./images/b0}
-%\includegraphics[scale=0.25]{./images/b1}
-%\includegraphics[scale=0.25]{./images/b2}
-%\includegraphics[scale=0.25]{./images/b3}
+\includegraphics[scale=0.25]{./images/b0}
+\includegraphics[scale=0.25]{./images/b1}
+\includegraphics[scale=0.25]{./images/b2}
+\includegraphics[scale=0.25]{./images/b3}
 \end{figure}
 
 We will use some terminology when discussing the tree, which we must define. A box's parent is the box one level up that contains it. Similarly a box's children are the boxes one level down that it contains. For example in Figure \ref{fig:4}, the only box on level $0$ is the parent of all boxes on level $1$. The near-neighbors of a box are the boxes on the same level with which it shares an edge or corner. In 2D, a box has at most $8$ near-neighbors. If two boxes are not near-neighbors they are called well-separated. A box's far-field is made up of all non-near-neighbor boxes. Lastly, each box has an interaction list, which is made up of boxes on the same level that are children of the parent's near-neighbors but are not near-neighbors. Figure \ref{fig:5} shows the interaction list of a box. Each box in 2D has at-most $27$, $6^2-3^2$, boxes in its interaction list.
@@ -164,7 +179,7 @@ We will use some terminology when discussing the tree, which we must define. A b
 \caption{The blue boxes make up the interaction list of the red box.}
 \label{fig:5}
 \centering
-%\includegraphics[scale=0.25]{./images/intlist}
+\includegraphics[scale=0.25]{./images/intlist}
 \end{figure}
 
 \subsection{Analysis-based FMMs}
@@ -195,7 +210,7 @@ where $\mathbf{y}^{B,u}$ is the equivalent surface and $\mathbf{x}^{B,u}$ is the
 \caption{The red circle is the upward equivalent surface with dark red discretization points. The blue circle is the upward check surface with light blue discretization points.}
 \label{fig:6}
 \centering
-%\includegraphics[scale=0.25]{./images/eqdens1}
+\includegraphics[scale=0.25]{./images/eqdens1}
 \end{figure}
 
 Before we address the application of the KIFMM to an axisymmetric density distribution, we discuss translation operators and the general structure of the FMMs. These two elements need to be covered to understand the inefficiencies of the KIFMM as a basis for the modal FMM in this scenario.
@@ -227,7 +242,7 @@ An important consideration in evaluating a fast method is the cost of pre-comput
 \caption{We use this figure to describe relationships between translation operators.}
 \label{fig:7}
 \centering
-%\includegraphics[scale=0.25]{./images/M2L}
+\includegraphics[scale=0.25]{./images/M2L}
 \end{figure}
 
 On the other hand, for kernels that are not translation invariant in any variable, every translation operator for every box in the computational domain needs to be computed. Every transfer vector is unique, so none of them can be reused or recycled as above. Notice that the modal Green's function is invariant in $z$, but not $r$, so we need to take this more costly pre-computation into consideration. In particular, this is a negative aspect of using the KIFMM for axisymmetric densities, which we discuss in $\S4.6$.
@@ -269,13 +284,13 @@ and Chebyshev interpolation, which gives the kernel approximation
 s_m(\mathbf{x},\mathbf{y})=\sum_i\sum_j s_m(\mathbf{x}_i,\mathbf{y}_j)w_i(\mathbf{x})w_j(\mathbf{y})
 \end{align}
 
-The advantages of this method for axisymmetric density distributions with difficult geometries are many. In general, this algorithm uses weights in each box placed at Chebyshev nodes as equivalent densities. Describe the following as a consequence of discretizing an integral equation. These nodes themselves clump in corners such that source densities located there will be well-represented. The location of these weights is shown in Figure \ref{fig:8}. The bbFMM is also good for analytically complicated kernels like the modal Green's function, $s_m$, but which can be evaluated efficiently as shown in \cite{YYM} and . Unlike the FMM or KIFMM, the bbFMM just requires a smooth kernel, and only uses kernel evaluations at Chebyshev nodes.
+The advantages of this method for axisymmetric density distributions with difficult geometries are many. In general, this algorithm uses weights in each box placed at Chebyshev nodes as equivalent densities. As a consequence of discretizing an integral equation of the type in equation $(1)$, we need a numerical quadrature rule that has more discretization points in corners or near geometric singularities. Chebyshev nodes clump in corners such that source densities located there will be well-represented. The location of these weights is shown in Figure \ref{fig:8}. The bbFMM is also good for analytically complicated kernels like the modal Green's function, $s_m$, but which can be evaluated efficiently as shown in \cite{HK} and \cite{YYM}. Unlike the FMM or KIFMM, the bbFMM just requires a smooth kernel, and only uses kernel evaluations at Chebyshev nodes.
 
 \begin{figure}[h]
 \caption{The bbFMM uses equivalent densities in the form of weights at the Chebyshev nodes in each box to represent the source densities. This is shown for $n^2=100$ Chebyshev nodes in red representing the source densities in blue.}
 \label{fig:8}
 \centering
-%\includegraphics[scale=0.25]{./images/b0wChebynodes}
+\includegraphics[scale=0.25]{./images/b0wChebynodes}
 \end{figure}
 
 To take a step back and find these Chebyshev nodes, we need to define the $n$th Chebyshev polynomial

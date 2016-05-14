@@ -14,23 +14,31 @@
 \usepackage{graphicx}
 \graphicspath{ {images/} }
 
-\title{The problem of an FMM for\\axisymmetric density distributions}
-\date{May 11, 2016}
+\title{Fast multipole methods for axisymmetric geometries}
+\author{Victor Churchill\\New York University}
+\date{May 13, 2016}
 
 \begin{document}
 \maketitle
 
+\begin{abstract}
+Fast multipole methods (FMMs) are one of the main numerical methods used in the solution of integral equations arising from the boundary-value PDEs of classical mathematical physics. When the boundary to be discretized possesses rotational symmetry, however, Fast Fourier Transforms can be used to decompose the surface integral equation into a series of integral equations along curves. The kernels of these integral equations are the Fourier modes of the original three-dimensional Green's function.
+
+In this work, we extend the idea of interpolation-based fast multipole methods to kernels which are \textit{not} translation invariant, in particular, modal Green's functions. Building on the previous work of Fong and Darve, 2009, we show that Black Box FMMs can be constructed for modal Green's functions which can take advantage of efficient BLAS3 linear algebra routines, effectively vectorizing the calculation across all rotational modes.
+\end{abstract}
+
 \section{Introduction}
-This project examines the problem of constructing of a fast multipole method (FMM) algorithm for density distributions on axisymmetric surfaces of revolution using the symmetry of the surface to represent the kernel as the modal Green's function. We call this the modal FMM.
+This project examines the problem of constructing of a fast multipole method (FMM) algorithm for density distributions on axisymmetric surfaces of revolution. Using the symmetry of the surface, Fourier methods can be used to represent free-space three-dimensional Green's functions in terms of their angular Fourier modes. These kernels are known as modal Green's functions. We will refer to the resulting numerical scheme as the \textit{modal FMM} (mFMM).
 
 We will work in three-dimensional cylindrical coordinates $(r,\theta,z)$ such that a point in Cartesian coordinates $(x,y,z)$ is represented by:
+
 \begin{align*}
 x &= r\cos\theta\\
 y &= r\sin\theta\\
 z &= z
 \end{align*}
 
-An axisymmetric, or rotationally symmetric, surface $\Gamma$ is one that has symmetry along the $\theta$-axis. The surface $\Gamma$ is obtained by rotating a two-dimensional curve $\gamma$ about the $z$ axis. $\gamma$ is called the generating curve like in Figure \ref{fig:1}, e.g. In particular, $\Gamma=\gamma\times\mathbb{T}$ where $\mathbb{T}$ is the one-dimensional torus (circle) parametrized by $\theta\in(-\pi,\pi]$.
+An axisymmetric, or rotationally symmetric, surface $\Gamma$ is obtained by rotating a two-dimensional curve $\gamma$ about the $z$ axis. The curve $\gamma$ is called the generating curve, as in Figure \ref{fig:1}. In particular, $\Gamma=\gamma\times\mathbb{T}$ where $\mathbb{T}$ is the one-dimensional torus (circle) parametrized by $\theta\in(-\pi,\pi]$.
 
 \begin{figure}[h]
 \caption{An axisymmetric bowl-shaped surface $\Gamma$ and its generating curve $\gamma$.}
@@ -40,6 +48,8 @@ An axisymmetric, or rotationally symmetric, surface $\Gamma$ is one that has sym
 %\includegraphics[scale=0.5]{./images/bowl}
 \end{figure}
 
+Introduce integral equations, quadrature, discretization near corners or geometric singularities.
+%use below
 The need for a modal FMM arises from axisymmetric surface density distributions with difficult geometries such that source densities clump together in corners and require a large number of discretization points to be well-represented. For example, a circular generating curve like in Figure \ref{fig:2} is easy to discretize with a relatively low number of equally-spaced points. For a rectangular generating curve like in Figure \ref{fig:3}, however, we need more discretization points in the corners due to this source density clumping. Similarly, for a bowl-shaped surface as in Figure \ref{fig:1}, we would need a lot of discretization points near the vertex of the generating curve.
 \begin{figure}[h]
 \caption{An axisymmetric torus $\Gamma$ and its circular generating curve $\gamma$.}
@@ -56,11 +66,13 @@ The need for a modal FMM arises from axisymmetric surface density distributions 
 %\includegraphics[scale=0.5]{./images/rect}
 \end{figure}
 
-Density distributions on axisymmetric surfaces have many applications. The problem of electromagnetic scattering by a surface of revolution, for example, has radar, geophysical exploration, and acoustics applications. Fast direct solvers like the one proposed in \cite{HMY} rely precisely on the construction of FMMs for axisymmetric density distributions to help solve problems arising in these fields.
+Integral equations on axisymmetric surfaces have many applications. The problem of electromagnetic scattering by a surface of revolution, for example, has radar, geophysical exploration, and acoustics applications. Fast direct solvers like the one proposed in \cite{HMY} rely precisely on FMM-type rank observations for axisymmetric density distributions to help solve problems arising in these fields.
 
 The remaining organization of this paper is as follows: $\S2$ states the problem in detail. $\S3$ gives the motivation for using and the derivation of the Fourier representation of a Green's function. $\S4$ gives an overview of fast multipole methods and discusses why some existing techniques are not optimal for geometrically-challenging axisymmetric distributions. $\S5$ details the black-box Chebyshev interpolation-based FMM as a basis for the modal FMM. Lastly, $\S6$ describes future work to construct, implement and test a full modal FMM algorithm.
 
 \section{Statement of problem}
+Motivate using larger potential instead of N-body problem, otherwise points need to be equidistantly spaced in $\theta$.
+
 Consider $N$ source points $\mathbf{y}_j=(r'_j,\theta'_j,z'_j)$ distributed on an axisymmetric surface $\Gamma$, with each assigned a charge $\sigma_j$. We want to compute the potential $f$ at target points $\mathbf{x}_i=(r_i,\theta_i,z_i)$ also on $\Gamma$ due to the source densities.  In practice, the same set of points act as both sources and targets. The potential is represented by the sum
 \begin{align}
 f(\mathbf{x}_i) = \sum_{j=1}^N K(\mathbf{x}_i,\mathbf{y}_j)\sigma_j
@@ -86,7 +98,7 @@ Now recall that if for two any points $\mathbf{x}$ and $\mathbf{y}$ in the compu
 \begin{align*}
 K(\mathbf{x},\mathbf{y}) = K(|\mathbf{x}-\mathbf{y}|)
 \end{align*}
-then it is called translation invariant. Notice that the Green's function for Laplace's equation is translation invariant. Not all kernels are translation invariant, however, and the fact that what we'll define in $\S3.1$ as the modal Green's function is not translation invariant is crucial to the difficulty of creating a modal FMM.
+then it is called translation invariant. Every translation invariant kernel is also rotationally invariant. Notice that the Green's function for Laplace's equation is translation invariant. Not all kernels are translation invariant, however, and the fact that what we'll define in $\S3.1$ as the modal Green's function is not translation invariant is crucial to the difficulty of creating a modal FMM.
 
 \subsection{Fourier representation of 3D integral equations}
 This derivation closely follows \cite{YYM}. Consider the Fredholm integral equation of the first kind defined on $\Gamma$:
@@ -129,9 +141,9 @@ Now rather than constructing a fast summation for a density distribution on $\Ga
 In the next section, we give an overview of the FMM, and discuss how several well-known fast methods approach the problem of axisymmetric density distributions.
 
 \section{Fast multipole methods}
-Fast multipole methods are a category of algorithms that were developed to speed the computation of the potential in a system. Equation $(1)$ shows the naive computation of such a potential. We can view this as a matrix-vector multiplication. In general, FMMs reduce the computational complexity of this matrix-vector multiplication from $\mathcal{O}(N^2)$ to $\mathcal{O}(N)$ or $\mathcal{O}(N\log N)$ for a given error level $\epsilon$. FMMs are fast approximation algorithms, with higher accuracy costing higher computational complexity. There are two fundamental categories of FMMs that differ in the way that they efficiently represent source densities: analysis-based algorithms that use analytic multipole and local expansions, and kernel-independent methods that use equivalent densities or weights.
+Fast multipole methods are a class of algorithms that were developed to compute $N$-body sums in $\mathcal{O}(N)$ time. FMMs are widely used in combination with iterative solvers to find the solutions of integral equations. Equation $(1)$ shows the naive computation of such a potential. We can view this as a matrix-vector multiplication. In general, FMMs reduce the computational complexity of this matrix-vector multiplication from $\mathcal{O}(N^2)$ to $\mathcal{O}(N)$ or $\mathcal{O}(N\log N)$ for a given error level $\epsilon$. FMMs are fast approximation algorithms, with higher accuracy costing higher computational complexity. There are two fundamental categories of FMMs that differ in the way that they efficiently represent source densities: analysis-based algorithms that use analytic multipole and local expansions, and kernel-independent methods that use equivalent densities or weights.
 
-In the analysis-based FMM, the potential induced by source densities at a far away target is represented using a multipole expansion, while the potential induced by the far away sources is encoded in a local expansion. In kernel-independent methods, the potential induced by source densities at a far away target is represented using an upward equivalent density, while the potential induced by far away sources is encoded using a downward equivalent density. The basic idea is that for well-separated points, the naively-computed potential between sources and targets is the same as the potential due to the efficient density representation. The target points can't tell the difference between the actual source densities and the density representation, so we can take advantage of the fact that it's less computationally expensive to use these representations.
+In the analysis-based FMM, the potential induced by source densities at a far away target is represented using a multipole expansion, while the potential induced by the far away sources is encoded in a local expansion. In kernel-independent methods, the potential induced by source densities at a far away target is represented using an upward equivalent density, while the potential induced by far away sources is encoded using a downward equivalent density. Each of these interactions is low-rank, and can be approximated using low-degree interpolation or special function expansions. The basic idea is that for well-separated points, the naively-computed potential between sources and targets is the same as the potential due to the efficient density representation. The target points can't tell the difference between the actual source densities and the density representation, so we can take advantage of the fact that it's less computationally expensive to use these representations.
 
 \subsection{Hierarchical tree structure}
 Before we discuss these two types of FMMs further, we need to define the tree structure of the computational domain which allows us to specify what we mean by "far away" as we said above, and perform multilevel FMMs to further accelerate the summation in equation $(1)$. In 2D, the computational domain is a box containing all source and target points. This box is hierarchically partitioned into a quadtree. The box containing all sources and targets is called level $0$ or the root level, with the next level of partitioning called level $1$, and so on. The computational domain is partitioned until there are at most a pre-specified number of points in each box. Figure \ref{fig:4} shows the partitioning process.
@@ -168,7 +180,7 @@ f(z)=\sum_{k=0}^pc_k(z-z_C)^k+\mathcal{O}\bigg(\frac{r^p}{R^p}\bigg)
 \end{align}
 This is the local expansion. In both expansions, $p$ is usually a small constant determined by the desired accuracy of the result. For 3D applications, rather than Laurent series', the far field is represented by expansions using spherical harmonics and Legendre polynomials.
 
-For our problem of a modal FMM for axisymmetric density distributions, however, an analysis-based FMM for the series of modal Green's functions is not possible because the necessary analytic machinery (multipole and local expansions) for the modal Green's function, $s_n$, has not been found yet, if it exists at all. Even if it does exist, it is inefficient to construct.
+For our problem of a modal FMM for axisymmetric density distributions, however, an analysis-based FMM for the series of modal Green's functions is not possible because the necessary analytic machinery (multipole and local expansions) for the modal Green's function, $s_n$, has not been found yet, if it exists at all. Even if it does exist, it is most likely inefficient to construct.
 
 \subsection{Kernel-independent methods}
 Since we don't have the analytic machinery required for an analysis-based FMM, we focus on kernel-independent methods to construct a modal FMM. One advantage of these methods is that they are relatively easy to implement, since in general they apply to an arbitrary kernel. To change the kernel in the classical FMM, we would need to develop analytic multipole and local expansions, which as aforementioned are difficult to find if they exist at all. These methods can be separated into two categories. The first requires that the kernel is the Green's function for some elliptic partial differential equation, satisfying Green's third identity. The most well-known method of this type is the kernel-independent FMM (KIFMM), which was constructed by Ying, Biros, and Zorin in \cite{YBZ}. Second are methods which work with any smooth kernel. The most well-known method of this type is the black-box FMM (bbFMM) by Fong and Darve in \cite{FD}.
@@ -237,7 +249,7 @@ As explained in $\S4.3$, rather than using analytic multipole and local expansio
 
 To implement the KIFMM for axisymmetric density distributions, the technique of using the modal Green's functions described at length by Young, Yao, and Martinsson in \cite{YYM} can be used; replace the 3D integral equations required by the 3D KIFMM with their Fourier representations, sequences of 2D integral equations. This way we can avoid the 3D KIFMM in favor of repeatedly applying the 2D KIFMM.
 
-There are, however, a few negative attributes of using the KIFMM as the basis for a modal FMM. The first is that the pre-computation of translation operators will be expensive due to the fact that the modal Green's function is not a translation invariant kernel. As aforementioned, for not translation invariant kernels, we need to pre-compute all translation operators for every box in the computational domain. In an attempt to reduce this pre-computation, we tried to find constant proportionality between the operators. For example, using Figure \ref{fig:7} we considered that perhaps the $M2L$ operator used to translate from the blue box to the purple box is in proportion to the $M2L$ operator used to translate from the blue box to the yellow box. However, these attempts failed and indeed since the translation operators in the KIFMM are simply kernel evaluations, we wouldn't expect to find this proportionality in them because it doesn't exist in the kernel. So every translation operator for every box on every level would need to be pre-computed.
+There are, however, a few negative attributes of using the KIFMM as the basis for a modal FMM. The first is that the pre-computation of translation operators will be expensive due to the fact that the modal Green's function is not a translation invariant kernel. As aforementioned, for non-translation invariant kernels, we need to pre-compute all translation operators for every box in the computational domain. In an attempt to reduce this pre-computation, we tried to find constant proportionality between the operators. For example, using Figure \ref{fig:7} we considered that perhaps the $M2L$ operator used to translate from the blue box to the purple box is in proportion to the $M2L$ operator used to translate from the blue box to the yellow box. However, these attempts failed and indeed since the translation operators in the KIFMM are simply kernel evaluations, we wouldn't expect to find this proportionality in them because it doesn't exist in the kernel. So every translation operator for every box on every level would need to be pre-computed.
 
 Further adding to the pre-computation is the fact that these operators need to be computed for all $2M+1$ modes, where $M$ is the truncation parameter for the Fourier expansion. As we saw in $\S4.5$, the translation operators in the KIFMM in their discretized form are matrices of kernel evaluations that translate an equivalent density from one box to that of another. Since we're essentially using $2M+1$ different kernels in this scenario, then the algorithm will require the pre-computation of $2M+1$ times the number of operators required for the computational domain. The consequences of translation operators made up of kernel evaluations is not limited to the pre-computation. The result is essentially that the entire FMM algorithm described in $\S4.5$ would need to be done separately $2M+1$ times, once for each mode of the kernel. This is in sharp contrast to the computational savings of the vectorization of this process that's possible in the black-box FMM, which we discuss next.
 
@@ -257,7 +269,7 @@ and Chebyshev interpolation, which gives the kernel approximation
 s_m(\mathbf{x},\mathbf{y})=\sum_i\sum_j s_m(\mathbf{x}_i,\mathbf{y}_j)w_i(\mathbf{x})w_j(\mathbf{y})
 \end{align}
 
-The advantages of this method for axisymmetric density distributions with difficult geometries are manifold. In general, this algorithm uses weights in each box placed at Chebyshev nodes as equivalent densities. These nodes themselves clump in corners such that source densities located there will be well-represented. The location of these weights is shown in Figure \ref{fig:8}. The bbFMM is also good for analytically complicated kernels like the modal Green's function, $s_m$. Unlike the FMM or KIFMM, the bbFMM just requires a smooth kernel, and only uses kernel evaluations at Chebyshev nodes.
+The advantages of this method for axisymmetric density distributions with difficult geometries are many. In general, this algorithm uses weights in each box placed at Chebyshev nodes as equivalent densities. Describe the following as a consequence of discretizing an integral equation. These nodes themselves clump in corners such that source densities located there will be well-represented. The location of these weights is shown in Figure \ref{fig:8}. The bbFMM is also good for analytically complicated kernels like the modal Green's function, $s_m$, but which can be evaluated efficiently as shown in \cite{YYM} and . Unlike the FMM or KIFMM, the bbFMM just requires a smooth kernel, and only uses kernel evaluations at Chebyshev nodes.
 
 \begin{figure}[h]
 \caption{The bbFMM uses equivalent densities in the form of weights at the Chebyshev nodes in each box to represent the source densities. This is shown for $n^2=100$ Chebyshev nodes in red representing the source densities in blue.}
@@ -359,7 +371,7 @@ Currently, we are able to produce and have tested all equivalent densities and t
 
 Much of the future work to do is a full FMM implementation in Python. Key pieces of this will be accelerating the $M2L$ operation by efficiently evaluating the modal Green's function, using the vectorization discussed in $\S6$, and using singular value decomposition (SVD) compression technique described in \cite{CGMR}, \cite{FD}, \cite{ZGR} and \cite{MV}.
 
-The following are descriptions of the computations done by each of our test programs.
+The following are descriptions of the computations done by each of our test programs. These tests are standard practice to debug translation operators.
 \begin{itemize}
 \item $\mathbf{S2M.py}$
 \begin{enumerate}
@@ -433,6 +445,8 @@ Note that in the case where there is a contribution from both the $M2L$ and $L2L
 \bibitem{GR} Greengard, L., Rokhlin, V., \emph{A Fast Algorithm for Particle Simulations}. Journal of Computational Physics, 73, (1987), 325-348.
 
 \bibitem{HMY} Hao, S., Martinsson, P.G., Young, P., \emph{An efficient and highly accurate solver for multi-body acoustic scattering problems involving rotationally symmetric scatterers}. Computers and Mathematics with Applications, 69, (2015), 304-318.
+
+\bibitem{HK} Helsing, J., Karlsson, A., \emph{An explicit kernel-split panel-based Nystr{\"o}m scheme for integral equations on axially symmetric surfaces}, \textbf{arxiv.org/abs/1310.4715}, (2014).
 
 \bibitem{MR} Martinsson, P.G., Rokhlin, V., \emph{An accelerated kernel-independent fast multipole method in one dimension}. SIAM Journal of Scientific Computing, Vol. 29, No. 3, (2007), 1160-1178.
 

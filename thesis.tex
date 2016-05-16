@@ -38,7 +38,7 @@ y &= r\sin\theta\\
 z &= z
 \end{align*}
 
-An axisymmetric, or rotationally symmetric, surface $\Gamma$ is obtained by rotating a two-dimensional curve $\gamma$ about the $z$ axis. The curve $\gamma$ is called the generating curve, as in Figure \ref{fig:1}. In particular, $\Gamma=\gamma\times\mathbb{T}$ where $\mathbb{T}$ is the one-dimensional torus (circle) parametrized by $\theta\in(-\pi,\pi]$.
+An axisymmetric, or rotationally symmetric, surface $\Gamma$ is obtained by rotating a two-dimensional curve $\gamma$ about the $z$-axis. The curve $\gamma$ is called the generating curve, as shown in Figure \ref{fig:1}. In particular, $\Gamma=\gamma\times\mathbb{T}$ where $\mathbb{T}$ is the one-dimensional torus (circle) parametrized by $\theta\in(-\pi,\pi]$.
 
 \begin{figure}[h]
 \caption{An axisymmetric bowl-shaped surface $\Gamma$ and its generating curve $\gamma$.}
@@ -48,17 +48,18 @@ An axisymmetric, or rotationally symmetric, surface $\Gamma$ is obtained by rota
 \includegraphics[scale=0.5]{./images/bowl}
 \end{figure}
 
-Integral equations are equations using integral operators defines on curves or surfaces. For example, consider the integral equation
+Many problems require solving integral equations defined on surfaces or curves of this type. We call these boundary integral equations. For example, consider the equation
 \begin{align}
 f(\mathbf{x}) &= \int_\Gamma K(\mathbf{x},\mathbf{y})\sigma(\mathbf{y})d\mathbf{y} &\mathbf{x},\mathbf{y}\in\Gamma
 \end{align}
-where $f$ is a potential, $K$ is the kernel, and $\sigma$ is a continuous density distribution. Boundary integral equations of this form can be solved for $f$ by using a discretization scheme.
-\begin{align}
-f(\mathbf{x}) = \sum_{j=1}^N K(\mathbf{x},\mathbf{y}_j)\sigma_j &&\mathbf{x},\mathbf{y}_j\in\Gamma
-\end{align}
-The discretization from the integral equation to a discrete sum over a finite number of points requires a numerical quadrature rule for approximating the integral which specifies the location and spacing of, as well as the weights at, the discretization points, as well as interpolation functions (polynomials).
+where $f$ is a potential, $K$ is a kernel, and $\sigma$ is an unknown continuous density or charge distribution. Boundary integral equations of this form often do not have analytical solutions, and in these cases we can approximate $f$ using a discretization scheme.
 
-Integral equations over surfaces and curves with corners or geometric singularities are more difficult to discretize than smooth curves and surfaces. For example, a circular generating curve like in Figure \ref{fig:2} is easy to discretize with a relatively low number of equally-spaced points (simple numerical quadrature). For a rectangular generating curve like in Figure \ref{fig:3}, however, we need more discretization points in the corners due to this source density clumping. Similarly, for a bowl-shaped surface as in Figure \ref{fig:1}, we would need a lot of discretization points near the vertex of the generating curve. The need for a modal FMM arises from this difficulty of discretizing axisymmetric boundary-value integral equations with corners or geometric singularities such that source densities clump together and require a large number of discretization points to be well-represented.
+The discretization process to approximate $(1)$ with a discrete sum over a finite number of points requires a numerical quadrature rule. This rule specifies the location and spacing of, as well as proxy weights at, discretization points. It also specifies the interpolation functions (polynomials) used to find the weights. One way to approximate $(1)$, for example, would be to use weights $w_j$ as in the following sum.
+\begin{align}
+f(\mathbf{x}) &= \sum_{\mathbf{y}_j\in\Gamma} K(\mathbf{x},\mathbf{y}_j)w_j &\mathbf{x}\in\Gamma
+\end{align}
+
+Approximating integral equations over surfaces and curves with corners or geometric singularities requires different discretization schemes than those used for smooth geometries. For example, a circular generating curve like in Figure \ref{fig:2} is well-approximated by a discretization scheme using a relatively low number of equally-spaced points. For a rectangular generating curve like in Figure \ref{fig:3}, however, we need more discretization points in the corners due to the clumping of densities in this area. If the discretization points were equally spaced and the weights didn't account for this density accumulation, the approximation of the original integral equation would suffer. Similarly, for a bowl-shaped surface as in Figure \ref{fig:1}, we would need a lot of discretization points near the vertex of the generating curve. The need for a modal FMM arises from this difficulty of well-approximating axisymmetric boundary-value integral equations with corners or geometric singularities using a reasonable number of discretization points.
 \begin{figure}[h]
 \caption{An axisymmetric torus $\Gamma$ and its circular generating curve $\gamma$.}
 \label{fig:2}
@@ -79,25 +80,18 @@ Integral equations on axisymmetric surfaces have many applications. The problem 
 The remaining organization of this paper is as follows: $\S2$ states the problem in detail. $\S3$ gives the motivation for using and the derivation of the Fourier representation of a Green's function. $\S4$ gives an overview of fast multipole methods and discusses why some existing techniques are not optimal for geometrically-challenging axisymmetric distributions. $\S5$ details the black-box Chebyshev interpolation-based FMM as a basis for the modal FMM. Lastly, $\S6$ describes future work to construct, implement and test a full modal FMM algorithm.
 
 \section{Statement of problem}
-Motivate using layer potential instead of N-body problem, otherwise points need to be equidistantly spaced in $\theta$.
-
 Consider the integral equation
 \begin{align}
 f(\mathbf{x}_i) &= \int_\Gamma K(\mathbf{x}_i,\mathbf{y})\sigma(\mathbf{y})d\mathbf{y} &\mathbf{x}_i,\mathbf{y}\in\Gamma
 \end{align}
+where $K$ is a layer potential kernel, or Green's function of the PDE that describes the potential between two points in the domain, and $\sigma$ is a continuous charge distribution. We want to compute the potential $f$  at targets $\mathbf{x}_i = (r_i,\theta_i,z_i)$ due to sources $\mathbf{y}=(r',\theta',z')$.
 
-where $K$ is a layer potential kernel, and $\sigma$ is a given continuous density or charge distribution. We want to compute the potential $f$  at targets $\mathbf{x}_i$ due to sources $\mathbf{y}$.
-
-Consider $N$ source points $\mathbf{y}_j=(r'_j,\theta'_j,z'_j)$ distributed on an axisymmetric surface $\Gamma$, with each assigned a charge $\sigma_j$. In practice, the same set of points act as both sources and targets. The potential is represented by the sum
-\begin{align}
-f(\mathbf{x}_i) = \sum_{j=1}^N K(\mathbf{x}_i,\mathbf{y}_j)\sigma_j
-\end{align}
-where $K(\mathbf{x},\mathbf{y})$ is a kernel, typically the Green's function of the partial differential equation that describes the potential between two points in the domain. In particular, we are interested in the free-space (no boundary conditions) Green's function for Laplace's equation, $\Delta u = 0$:
+In particular, we are interested in the free-space (no boundary conditions) Green's function for Laplace's equation, $\Delta u = 0$:
 \begin{align}
 K(\mathbf{x},\mathbf{y}) = \frac{1}{4\pi |\mathbf{x}-\mathbf{y}|}
 \end{align}
 
-The goal is to construct a fast summation method for this integral equation that takes advantage of the rotational symmetry of $\Gamma$ using a discretization scheme and numerical quadrature rule that accounts for geometric structures with corners or geometric singularities.
+The goal is to construct a fast summation method for this integral equation that takes advantage of the rotational symmetry of $\Gamma$ using a discretization scheme and numerical quadrature rule that accounts for geometric structures with corners or singularities.
 
 \section{Modal Green's Function}
 
@@ -284,7 +278,7 @@ and Chebyshev interpolation, which gives the kernel approximation
 s_m(\mathbf{x},\mathbf{y})=\sum_i\sum_j s_m(\mathbf{x}_i,\mathbf{y}_j)w_i(\mathbf{x})w_j(\mathbf{y})
 \end{align}
 
-The advantages of this method for axisymmetric density distributions with difficult geometries are many. In general, this algorithm uses weights in each box placed at Chebyshev nodes as equivalent densities. As a consequence of discretizing an integral equation of the type in equation $(1)$, we need a numerical quadrature rule that has more discretization points in corners or near geometric singularities. Chebyshev nodes clump in corners such that source densities located there will be well-represented. The location of these weights is shown in Figure \ref{fig:8}. The bbFMM is also good for analytically complicated kernels like the modal Green's function, $s_m$, but which can be evaluated efficiently as shown in \cite{HK} and \cite{YYM}. Unlike the FMM or KIFMM, the bbFMM just requires a smooth kernel, and only uses kernel evaluations at Chebyshev nodes.
+The advantages of this method for axisymmetric density distributions with difficult geometries are many. In general, this algorithm uses weights in each box placed at Chebyshev nodes as equivalent densities. As a consequence of discretizing an integral equation of the type in equation $(3)$, we need a numerical quadrature rule that has more discretization points in corners or near geometric singularities. Chebyshev nodes achieve this, since they clump in corners such that source densities located there are well-represented. The location of these weights is shown in Figure \ref{fig:8}. The bbFMM is also good for analytically complicated kernels like the modal Green's function, $s_m$, but which can be evaluated efficiently as shown in \cite{HK} and \cite{YYM}. Unlike the FMM or KIFMM, the bbFMM just requires a smooth kernel, and only uses kernel evaluations at Chebyshev nodes.
 
 \begin{figure}[h]
 \caption{The bbFMM uses equivalent densities in the form of weights at the Chebyshev nodes in each box to represent the source densities. This is shown for $n^2=100$ Chebyshev nodes in red representing the source densities in blue.}

@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015) (preloaded format=pdflatex 2015.5.24)  16 MAY 2016 00:21
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015) (preloaded format=pdflatex 2015.5.24)  17 MAY 2016 09:18
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -732,54 +732,61 @@ Package pdftex.def Info: ./images/rect.png used on input line 75.
 File: ./images/b0.png Graphic file (type png)
 
 <use ./images/b0.png>
-Package pdftex.def Info: ./images/b0.png used on input line 164.
+Package pdftex.def Info: ./images/b0.png used on input line 167.
 (pdftex.def)             Requested size: 142.53215pt x 143.53589pt.
  <./images/b1.png, id=55, 570.13pt x 574.145pt>
 File: ./images/b1.png Graphic file (type png)
 
 <use ./images/b1.png>
-Package pdftex.def Info: ./images/b1.png used on input line 165.
+Package pdftex.def Info: ./images/b1.png used on input line 168.
 (pdftex.def)             Requested size: 142.53215pt x 143.53589pt.
  <./images/b2.png, id=56, 570.13pt x 574.145pt>
 File: ./images/b2.png Graphic file (type png)
 
 <use ./images/b2.png>
-Package pdftex.def Info: ./images/b2.png used on input line 166.
+Package pdftex.def Info: ./images/b2.png used on input line 169.
 (pdftex.def)             Requested size: 142.53215pt x 143.53589pt.
  <./images/b3.png, id=57, 570.13pt x 574.145pt>
 File: ./images/b3.png Graphic file (type png)
 
 <use ./images/b3.png>
-Package pdftex.def Info: ./images/b3.png used on input line 167.
+Package pdftex.def Info: ./images/b3.png used on input line 170.
 (pdftex.def)             Requested size: 142.53215pt x 143.53589pt.
- [7 <./images/b0.png> <./images/b1.png> <./images/b2.png> <./images/b3.png>] <.
-/images/intlist.png, id=66, 570.13pt x 574.145pt>
-File: ./images/intlist.png Graphic file (type png)
 
-<use ./images/intlist.png>
-Package pdftex.def Info: ./images/intlist.png used on input line 176.
+
+LaTeX Warning: `h' float specifier changed to `ht'.
+
+<./images/intlist.png, id=58, 570.13pt x 574.145pt>
+File: ./images/intlist.png Graphic file (type png)
+ <use ./images/intlist.png>
+Package pdftex.def Info: ./images/intlist.png used on input line 179.
 (pdftex.def)             Requested size: 142.53215pt x 143.53589pt.
- [8 <./images/intlist.png>] [9]
+
+
+LaTeX Warning: `h' float specifier changed to `ht'.
+
+[7] [8 <./images/b0.png> <./images/b1.png> <./images/b2.png> <./images/b3.png>]
+[9 <./images/intlist.png>]
 <./images/eqdens1.png, id=74, 890.32625pt x 896.34875pt>
 File: ./images/eqdens1.png Graphic file (type png)
 
 <use ./images/eqdens1.png>
-Package pdftex.def Info: ./images/eqdens1.png used on input line 207.
+Package pdftex.def Info: ./images/eqdens1.png used on input line 210.
 (pdftex.def)             Requested size: 222.58101pt x 224.08664pt.
  [10 <./images/eqdens1.png>]
-LaTeX Font Info:    Try loading font information for OMS+cmr on input line 218.
+LaTeX Font Info:    Try loading font information for OMS+cmr on input line 221.
 
 
 (/usr/local/texlive/2015/texmf-dist/tex/latex/base/omscmr.fd
 File: omscmr.fd 2014/09/29 v2.5h Standard LaTeX font definitions
 )
 LaTeX Font Info:    Font shape `OMS/cmr/m/n' in size <10.95> not available
-(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 218.
+(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 221.
 
 <./images/M2L.png, id=79, 570.13pt x 574.145pt>
 File: ./images/M2L.png Graphic file (type png)
  <use ./images/M2L.png>
-Package pdftex.def Info: ./images/M2L.png used on input line 239.
+Package pdftex.def Info: ./images/M2L.png used on input line 242.
 (pdftex.def)             Requested size: 142.53215pt x 143.53589pt.
 
 
@@ -790,7 +797,7 @@ LaTeX Warning: `h' float specifier changed to `ht'.
 File: ./images/b0wChebynodes.png Graphic file (type png)
 
 <use ./images/b0wChebynodes.png>
-Package pdftex.def Info: ./images/b0wChebynodes.png used on input line 287.
+Package pdftex.def Info: ./images/b0wChebynodes.png used on input line 290.
 (pdftex.def)             Requested size: 142.53215pt x 143.53589pt.
 
 
@@ -798,30 +805,25 @@ LaTeX Warning: `h' float specifier changed to `ht'.
 
 [14] [15 <./images/b0wChebynodes.png>] [16] [17]
 
-LaTeX Warning: Citation `MV' on page 18 undefined on input line 381.
+LaTeX Warning: Citation `MV' on page 18 undefined on input line 384.
 
 [18]
-Underfull \hbox (badness 10000) in paragraph at lines 389--390
+Underfull \hbox (badness 10000) in paragraph at lines 392--393
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 391--392
+Underfull \hbox (badness 10000) in paragraph at lines 394--395
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 393--394
+Underfull \hbox (badness 10000) in paragraph at lines 396--397
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 395--396
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 402--403
+Underfull \hbox (badness 10000) in paragraph at lines 398--399
 
  []
 
@@ -831,17 +833,22 @@ Underfull \hbox (badness 10000) in paragraph at lines 405--406
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 409--410
+Underfull \hbox (badness 10000) in paragraph at lines 408--409
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 412--413
 
  []
 
 [19]
-Underfull \hbox (badness 10000) in paragraph at lines 422--423
+Underfull \hbox (badness 10000) in paragraph at lines 425--426
 
  []
 
 [20]
-Underfull \hbox (badness 10000) in paragraph at lines 437--438
+Underfull \hbox (badness 10000) in paragraph at lines 440--441
 
  []
 
@@ -853,7 +860,7 @@ LaTeX Warning: There were undefined references.
 Here is how much of TeX's memory you used:
  21716 strings out of 493089
  547889 string characters out of 6134842
- 723913 words of memory out of 5000000
+ 723915 words of memory out of 5000000
  24798 multiletter control sequences out of 15000+600000
  13579 words of font info for 50 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
@@ -876,7 +883,7 @@ e/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/local/texlive/2
 /texmf-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb></usr/local/texlive/2015/t
 exmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb></usr/local/texlive/2015/te
 xmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb>
-Output written on thesis.pdf (22 pages, 469208 bytes).
+Output written on thesis.pdf (22 pages, 469196 bytes).
 PDF statistics:
  180 PDF objects out of 1000 (max. 8388607)
  108 compressed objects within 2 object streams

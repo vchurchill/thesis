@@ -44,11 +44,11 @@ An axisymmetric, or rotationally symmetric, surface $\Gamma$ is obtained by rota
 \caption{An axisymmetric bowl-shaped surface $\Gamma$ and its generating curve $\gamma$.}
 \label{fig:1}
 \centering
-\includegraphics[scale=0.5]{./images/bowl3}
-\includegraphics[scale=0.5]{./images/bowl}
+%\includegraphics[scale=0.5]{./images/bowl3}
+%\includegraphics[scale=0.5]{./images/bowl}
 \end{figure}
 
-Many problems require solving integral equations defined on surfaces or curves of this type. We call these boundary integral equations. For example, consider the equation
+Many problems in mathematical physics require solving boundary integral equations defined on surfaces or curves of this nature. For example, consider the equation
 \begin{align}
 f(\mathbf{x}) &= \int_\Gamma K(\mathbf{x},\mathbf{y})\sigma(\mathbf{y})d\mathbf{y} &\mathbf{x},\mathbf{y}\in\Gamma
 \end{align}
@@ -64,15 +64,15 @@ Approximating integral equations over surfaces and curves with corners or geomet
 \caption{An axisymmetric torus $\Gamma$ and its circular generating curve $\gamma$.}
 \label{fig:2}
 \centering
-\includegraphics[scale=0.5]{./images/torus}
-\includegraphics[scale=0.5]{./images/circle}
+%\includegraphics[scale=0.5]{./images/torus}
+%\includegraphics[scale=0.5]{./images/circle}
 \end{figure}
 \begin{figure}[h]
 \caption{An axisymmetric pipe surface $\Gamma$ and its rectangular generating curve $\gamma$.}
 \label{fig:3}
 \centering
-\includegraphics[scale=0.5]{./images/pipe2}
-\includegraphics[scale=0.5]{./images/rect}
+%\includegraphics[scale=0.5]{./images/pipe2}
+%\includegraphics[scale=0.5]{./images/rect}
 \end{figure}
 
 Integral equations on axisymmetric surfaces have many applications. The problem of electromagnetic scattering by a surface of revolution, for example, has radar, geophysical exploration, and acoustics applications. Fast direct solvers, like the one proposed in \cite{HMY}, rely on FMM-type rank observations for axisymmetric density distributions to help solve problems arising in these fields.
@@ -86,7 +86,7 @@ f(\mathbf{x}_i) &= \int_\Gamma K(\mathbf{x}_i,\mathbf{y})\sigma(\mathbf{y})d\mat
 \end{align}
 where $K$ is a layer potential kernel, or Green's function of the PDE that describes the potential between two points in the domain, and $\sigma$ is a continuous charge distribution. We want to compute the potential $f$  at targets $\mathbf{x}_i = (r_i,\theta_i,z_i)$ due to sources $\mathbf{y}=(r',\theta',z')$.
 
-In particular, we are interested in the free-space (no boundary conditions) Green's function for Laplace's equation, $\Delta u = 0$:
+In particular, we are interested in using the free-space Green's function for Laplace's equation, $\Delta u = 0$:
 \begin{align}
 K(\mathbf{x},\mathbf{y}) = \frac{1}{4\pi |\mathbf{x}-\mathbf{y}|}
 \end{align}
@@ -114,9 +114,8 @@ This derivation closely follows \cite{YYM}. Consider the Fredholm integral equat
 \begin{align}
 f(\mathbf{x}) &= \int_\Gamma K(\mathbf{x},\mathbf{y})\sigma(\mathbf{y})d\mathbf{y} &\mathbf{x},\mathbf{y}\in\Gamma
 \end{align}
-This is a 3D integral equation, which we can view as a continuous version of equation $(1)$.
 
-We can represent $(3)$ as a sequence of 2D integral equations defined on the generating curve $\gamma$ by performing Fourier transformations on $f$, $\sigma$, and $K$. If $f_m$, $\sigma_m$, and $k_m$ are the Fourier modes of $f$, $\sigma$, and $K$, respectively, then we have
+We can represent $(5)$ as a sequence of 2D integral equations defined on the generating curve $\gamma$ by performing Fourier transformations on $f$, $\sigma$, and $K$. If $f_m$, $\sigma_m$, and $k_m$ are the Fourier modes of $f$, $\sigma$, and $K$, respectively, then we have
 \begin{align*}
 f_m(r,z)&=\int_\mathbb{T}\frac{e^{-im\theta}}{\sqrt{2\pi}}f(r,z,\theta)d\theta&f(\mathbf{x})&=\sum_{m\in\mathbb{Z}}\frac{e^{im\theta}}{\sqrt{2\pi}}f_m(r,z)\\
 \sigma_m(r,z)&=\int_\mathbb{T}\frac{e^{-im\theta}}{\sqrt{2\pi}}\sigma(r,z,\theta)d\theta&\sigma(\mathbf{x})&=\sum_{m\in\mathbb{Z}}\frac{e^{im\theta}}{\sqrt{2\pi}}\sigma_m(r,z)\\
@@ -150,21 +149,25 @@ Now rather than constructing a fast summation for a density distribution on $\Ga
 In the next section, we give an overview of the FMM, and discuss how several well-known fast methods approach the problem of axisymmetric density distributions.
 
 \section{Fast multipole methods}
-Fast multipole methods are a class of algorithms that were developed to compute $N$-body sums in $\mathcal{O}(N)$ time. FMMs are widely used in combination with iterative solvers to find the solutions of integral equations. Equation $(1)$ shows the naive computation of such a potential. We can view this as a matrix-vector multiplication. In general, FMMs reduce the computational complexity of this matrix-vector multiplication from $\mathcal{O}(N^2)$ to $\mathcal{O}(N)$ or $\mathcal{O}(N\log N)$ for a given error level $\epsilon$. FMMs are fast approximation algorithms, with higher accuracy costing higher computational complexity. There are two fundamental categories of FMMs that differ in the way that they efficiently represent source densities: analysis-based algorithms that use analytic multipole and local expansions, and kernel-independent methods that use equivalent densities or weights.
+Fast multipole methods are a class of algorithms that were developed to compute $N$-body sums in $\mathcal{O}(N)$ time. The following equation shows the naive computation of such a potential.
+\begin{align}
+f(\mathbf{x}_i)=\sum_{j=1}^N K(\mathbf{x}_i,\mathbf{y}_j)\sigma_j
+\end{align}
+We can view this as a matrix-vector multiplication. In general, FMMs reduce the computational complexity of this matrix-vector multiplication from $\mathcal{O}(N^2)$ to $\mathcal{O}(N)$ or $\mathcal{O}(N\log N)$ for a given error level $\epsilon$. FMMs are fast approximation algorithms, with higher accuracy costing higher computational complexity. FMMs are also widely used in combination with iterative solvers to find the solutions of integral equations. There are two fundamental categories of FMMs that differ in the way that they efficiently represent source densities: analysis-based algorithms that use analytic multipole and local expansions, and kernel-independent methods that use equivalent densities or weights.
 
 In the analysis-based FMM, the potential induced by source densities at a far away target is represented using a multipole expansion, while the potential induced by the far away sources is encoded in a local expansion. In kernel-independent methods, the potential induced by source densities at a far away target is represented using an upward equivalent density, while the potential induced by far away sources is encoded using a downward equivalent density. Each of these interactions is low-rank, and can be approximated using low-degree interpolation or special function expansions. The basic idea is that for well-separated points, the naively-computed potential between sources and targets is the same as the potential due to the efficient density representation. The target points can't tell the difference between the actual source densities and the density representation, so we can take advantage of the fact that it's less computationally expensive to use these representations.
 
 \subsection{Hierarchical tree structure}
-Before we discuss these two types of FMMs further, we need to define the tree structure of the computational domain which allows us to specify what we mean by "far away" as we said above, and perform multilevel FMMs to further accelerate the summation in equation $(1)$. In 2D, the computational domain is a box containing all source and target points. This box is hierarchically partitioned into a quadtree. The box containing all sources and targets is called level $0$ or the root level, with the next level of partitioning called level $1$, and so on. The computational domain is partitioned until there are at most a pre-specified number of points in each box. Figure \ref{fig:4} shows the partitioning process.
+Before we discuss these two types of FMMs further, we need to define the tree structure of the computational domain which allows us to specify what we mean by "far away" as we said above, and perform multilevel FMMs to accelerate the summation in equation $(11)$. In 2D, the computational domain is a box containing all source and target points. This box is hierarchically partitioned into a quadtree. The box containing all sources and targets is called level $0$ or the root level, with the next level of partitioning called level $1$, and so on. The computational domain is partitioned until there are at most a pre-specified number of points in each box. Figure \ref{fig:4} shows the partitioning process.
 
 \begin{figure}[h]
 \caption{The hierarchical partitioning of the computational domain, levels $0$ through $3$, with sources and targets in blue.}
 \label{fig:4}
 \centering
-\includegraphics[scale=0.25]{./images/b0}
-\includegraphics[scale=0.25]{./images/b1}
-\includegraphics[scale=0.25]{./images/b2}
-\includegraphics[scale=0.25]{./images/b3}
+%\includegraphics[scale=0.25]{./images/b0}
+%\includegraphics[scale=0.25]{./images/b1}
+%\includegraphics[scale=0.25]{./images/b2}
+%\includegraphics[scale=0.25]{./images/b3}
 \end{figure}
 
 We will use some terminology when discussing the tree, which we must define. A box's parent is the box one level up that contains it. Similarly a box's children are the boxes one level down that it contains. For example in Figure \ref{fig:4}, the only box on level $0$ is the parent of all boxes on level $1$. The near-neighbors of a box are the boxes on the same level with which it shares an edge or corner. In 2D, a box has at most $8$ near-neighbors. If two boxes are not near-neighbors they are called well-separated. A box's far-field is made up of all non-near-neighbor boxes. Lastly, each box has an interaction list, which is made up of boxes on the same level that are children of the parent's near-neighbors but are not near-neighbors. Figure \ref{fig:5} shows the interaction list of a box. Each box in 2D has at-most $27$, $6^2-3^2$, boxes in its interaction list.
@@ -173,7 +176,7 @@ We will use some terminology when discussing the tree, which we must define. A b
 \caption{The blue boxes make up the interaction list of the red box.}
 \label{fig:5}
 \centering
-\includegraphics[scale=0.25]{./images/intlist}
+%\includegraphics[scale=0.25]{./images/intlist}
 \end{figure}
 
 \subsection{Analysis-based FMMs}
@@ -204,7 +207,7 @@ where $\mathbf{y}^{B,u}$ is the equivalent surface and $\mathbf{x}^{B,u}$ is the
 \caption{The red circle is the upward equivalent surface with dark red discretization points. The blue circle is the upward check surface with light blue discretization points.}
 \label{fig:6}
 \centering
-\includegraphics[scale=0.25]{./images/eqdens1}
+%\includegraphics[scale=0.25]{./images/eqdens1}
 \end{figure}
 
 Before we address the application of the KIFMM to an axisymmetric density distribution, we discuss translation operators and the general structure of the FMMs. These two elements need to be covered to understand the inefficiencies of the KIFMM as a basis for the modal FMM in this scenario.
@@ -228,7 +231,7 @@ In the analysis-based FMM, a translation operator translates a multipole or loca
 
 It's important to note that the sum of the contributions from the $M2L$ operation and $L2L$ operation make up the local expansion, or downward equivalent density, for a box.
 
-These translation operators are the backbone of a fast multipole algorithm because they reduce the number of direct computations required to do the summation in equation $(1)$. The $M2M$, $M2L$, and $L2L$ translation operators can be computed without any knowledge of the source or target points, so they are a true pre-computation. The only requirement is a partitioned computational domain.
+These translation operators are the backbone of a fast multipole algorithm because they reduce the number of direct computations required to do the summation in equation $(11)$. The $M2M$, $M2L$, and $L2L$ translation operators can be computed without any knowledge of the source or target points, so they are a true pre-computation. The only requirement is a partitioned computational domain.
 
 An important consideration in evaluating a fast method is the cost of pre-computing these operators. For translation invariant kernels, the translation operators will only differ based on relative position and level in the hierarchical tree. This is due to the fact that the kernel only depends on the difference between coordinate values, $(|\mathbf{x}-\mathbf{y}|)$. For example, using Figure \ref{fig:7}, with a translation invariant kernel the $M2L$ operator used to translate from the green box to the orange box would be the same one used to translate from the blue box to the red box. So in the case of translation invariant kernels, many $M2L$ translation operators on a given level are identical, and need not be computed repeatedly. In fact, each level has at most $40$ $(7^2-3^2)$ unique transfer vectors in this case.
 
@@ -236,13 +239,13 @@ An important consideration in evaluating a fast method is the cost of pre-comput
 \caption{We use this figure to describe relationships between translation operators.}
 \label{fig:7}
 \centering
-\includegraphics[scale=0.25]{./images/M2L}
+%\includegraphics[scale=0.25]{./images/M2L}
 \end{figure}
 
-On the other hand, for kernels that are not translation invariant in any variable, every translation operator for every box in the computational domain needs to be computed. Every transfer vector is unique, so none of them can be reused or recycled as above. Notice that the modal Green's function is invariant in $z$, but not $r$, so we need to take this more costly pre-computation into consideration. In particular, this is a negative aspect of using the KIFMM for axisymmetric densities, which we discuss in $\S4.6$.
+On the other hand, for non-translation invariant kernels, every translation operator for every box in the computational domain needs to be computed. Every transfer vector is unique, so none of them can be reused or recycled as above. Notice that the modal Green's function is invariant in $z$, but not $r$, so we need to take this more costly pre-computation into consideration. In particular, this is a negative aspect of using the KIFMM for axisymmetric densities, which we discuss in $\S4.6$.
 
 \subsection{General multilevel algorithm}
-Now that we've defined the tree structure and translation operators, we can give the general algorithmic structure for FMMs. All of these methods, whether analysis-based or kernel-independent, use the same general steps to accelerate the summation in equation $(1)$. This is shown in \cite{FD}, \cite{GR}, \cite{YBZ}, and many other FMM papers. Here we'll continue to work in 2D, and use terminology from kernel-independent methods (upward and downward equivalent densities), although we could analogously substitute the analysis-based FMM language.
+Now that we've defined the tree structure and translation operators, we can give the general algorithmic structure for FMMs. All of these methods, whether analysis-based or kernel-independent, use the same general steps to accelerate the summation in equation $(11)$. This is shown in \cite{FD}, \cite{GR}, \cite{YBZ}, and many other FMM papers. Here we'll continue to work in 2D, and use terminology from kernel-independent methods (upward and downward equivalent densities), although we could analogously substitute the analysis-based FMM language.
 \begin{enumerate}
 \item Hierarchically partition the computational domain using a quadtree of boxes with $L+1$ levels $0,\dots,L$, until each box on the finest level $L$ contains no more than $p$ source points. The parameter $p$ is chosen based on a desired accuracy level $\epsilon$.
 \item For each box on the finest level $L$, construct an upward equivalent density using the $S2M$ operator.
@@ -258,9 +261,9 @@ As explained in $\S4.3$, rather than using analytic multipole and local expansio
 
 To implement the KIFMM for axisymmetric density distributions, the technique of using the modal Green's functions described at length by Young, Yao, and Martinsson in \cite{YYM} can be used; replace the 3D integral equations required by the 3D KIFMM with their Fourier representations, sequences of 2D integral equations. This way we can avoid the 3D KIFMM in favor of repeatedly applying the 2D KIFMM.
 
-There are, however, a few negative attributes of using the KIFMM as the basis for a modal FMM. The first is that the pre-computation of translation operators will be expensive due to the fact that the modal Green's function is not a translation invariant kernel. As aforementioned, for non-translation invariant kernels, we need to pre-compute all translation operators for every box in the computational domain. In an attempt to reduce this pre-computation, we tried to find constant proportionality between the operators. For example, using Figure \ref{fig:7} we considered that perhaps the $M2L$ operator used to translate from the blue box to the purple box is in proportion to the $M2L$ operator used to translate from the blue box to the yellow box. However, these attempts failed and indeed since the translation operators in the KIFMM are simply kernel evaluations, we wouldn't expect to find this proportionality in them because it doesn't exist in the kernel. So every translation operator for every box on every level would need to be pre-computed.
+There are, however, a few negative attributes of using the KIFMM as the basis for a modal FMM. The first is that the pre-computation of translation operators will be expensive due to the fact that the modal Green's function is not translation invariant. As aforementioned, for non-translation invariant kernels, we need to pre-compute all translation operators for every box in the computational domain. In an attempt to reduce this pre-computation, we tried to find constant proportionality between the operators. For example, using Figure \ref{fig:7} we considered that perhaps the $M2L$ operator used to translate from the blue box to the purple box is in proportion to the $M2L$ operator used to translate from the blue box to the yellow box. However, these attempts failed and indeed since the translation operators in the KIFMM are simply kernel evaluations, we wouldn't expect to find this proportionality in them because it doesn't exist in the kernel. So every translation operator for every box on every level would need to be pre-computed.
 
-Further adding to the pre-computation is the fact that these operators need to be computed for all $2M+1$ modes, where $M$ is the truncation parameter for the Fourier expansion. As we saw in $\S4.5$, the translation operators in the KIFMM in their discretized form are matrices of kernel evaluations that translate an equivalent density from one box to that of another. Since we're essentially using $2M+1$ different kernels in this scenario, then the algorithm will require the pre-computation of $2M+1$ times the number of operators required for the computational domain. The consequences of translation operators made up of kernel evaluations is not limited to the pre-computation. The result is essentially that the entire FMM algorithm described in $\S4.5$ would need to be done separately $2M+1$ times, once for each mode of the kernel. This is in sharp contrast to the computational savings of the vectorization of this process that's possible in the black-box FMM, which we discuss next.
+Further adding to the pre-computation is the fact that these operators need to be computed for all $2M+1$ modes, where $M$ is the truncation parameter for the Fourier expansion. As we saw in $\S4.4$, the translation operators in the KIFMM in their discretized form are matrices of kernel evaluations that translate an equivalent density from one box to that of another. Since we're essentially using $2M+1$ different kernels in this scenario, then the algorithm will require the pre-computation of $2M+1$ times the number of operators required for the computational domain. The consequences of translation operators made up of kernel evaluations is not limited to the pre-computation. The result is essentially that the entire FMM algorithm described in $\S4.5$ would need to be done separately $2M+1$ times, once for each mode of the kernel. This is in sharp contrast to the computational savings of the vectorization of this process that's possible in the black-box FMM, which we discuss next.
 
 \section{The black-box FMM}
 The black-box FMM is a kernel-independent, Chebyshev interpolation-based $\mathcal{O}(N)$ algorithm for non-oscillatory kernels. Over the course of this section, we will show that the bbFMM will serve as a strong basis for developing a modal FMM. In particular, we consider this scheme to quickly compute this sum for each modal Green's function
@@ -278,13 +281,13 @@ and Chebyshev interpolation, which gives the kernel approximation
 s_m(\mathbf{x},\mathbf{y})=\sum_i\sum_j s_m(\mathbf{x}_i,\mathbf{y}_j)w_i(\mathbf{x})w_j(\mathbf{y})
 \end{align}
 
-The advantages of this method for axisymmetric density distributions with difficult geometries are many. In general, this algorithm uses weights in each box placed at Chebyshev nodes as equivalent densities. As a consequence of discretizing an integral equation of the type in equation $(3)$, we need a numerical quadrature rule that has more discretization points in corners or near geometric singularities. Chebyshev nodes achieve this, since they clump in corners such that source densities located there are well-represented. The location of these weights is shown in Figure \ref{fig:8}. The bbFMM is also good for analytically complicated kernels like the modal Green's function, $s_m$, but which can be evaluated efficiently as shown in \cite{HK} and \cite{YYM}. Unlike the FMM or KIFMM, the bbFMM just requires a smooth kernel, and only uses kernel evaluations at Chebyshev nodes.
+The advantages of this method for axisymmetric density distributions with difficult geometries are many. As a consequence of discretizing an integral equation of the type in equation $(3)$ defined on a geometrically-challenging curve, we need a numerical quadrature rule that has more discretization points in corners or near geometric singularities for the reasons discussed in $\S1$. In general, this algorithm uses weights in each box placed at Chebyshev nodes as equivalent densities. Chebyshev nodes satisfy these requirements since they accumulate more densely in corners such that source densities located there are well-represented. The location of these weights is shown in Figure \ref{fig:8}. The bbFMM is also good for analytically complicated kernels, like the modal Green's function $s_m$, that can be evaluated efficiently as shown in \cite{HK} and \cite{YYM}. Unlike the FMM or KIFMM, the bbFMM just requires a smooth kernel, and only uses kernel evaluations at Chebyshev nodes.
 
 \begin{figure}[h]
 \caption{The bbFMM uses equivalent densities in the form of weights at the Chebyshev nodes in each box to represent the source densities. This is shown for $n^2=100$ Chebyshev nodes in red representing the source densities in blue.}
 \label{fig:8}
 \centering
-\includegraphics[scale=0.25]{./images/b0wChebynodes}
+%\includegraphics[scale=0.25]{./images/b0wChebynodes}
 \end{figure}
 
 To take a step back and find these Chebyshev nodes, we need to define the $n$th Chebyshev polynomial
@@ -297,7 +300,7 @@ on an interval $[a,b]$. In one dimension, the Chebyshev nodes are the $n$ roots 
 \end{align*}
 For two dimensions, there are $n^2$ Chebyshev nodes that are the tensor product of the Chebyshev nodes of each interval on the $r$ and $z$ axes.
 
-From the Chebyshev polynomials Fong and Darve derive the interpolation functions
+From the Chebyshev polynomials, Fong and Darve derive the interpolation functions
 \begin{align*}
 R_n(\mathbf{x},\mathbf{y}) = \bigg(\frac{1}{n} + \frac{2}{n}\sum_{i=1}^{n-1}T_n(r)T_n(z)\bigg)\bigg(\frac{1}{n} + \frac{2}{n}\sum_{i=1}^{n-1}T_n(r')T_n(z')\bigg)
 \end{align*}
@@ -305,14 +308,14 @@ for $\mathbf{x}=(r,z)$ and $\mathbf{y}=(r',z')$. From there we can construct a l
 \begin{align}
 s_m(\mathbf{x},\mathbf{y}) = \sum_{l_1=1}^n\sum_{l_2=1}^n\sum_{m_1=1}^n\sum_{m_2=1}^n s_m(\mathbf{\overline{x}}_{l_1,l_2},\mathbf{\overline{y}}_{m_1,m_2})R_n(\mathbf{\overline{x}}_{l_1,l_2},\mathbf{x})R_n(\mathbf{\overline{y}}_{m_1,m_2},\mathbf{y})
 \end{align}
-and apply it to approximate the sum in equation $(12)$ by
+and apply it to approximate the sum in equation $(14)$ by
 \begin{align}
 f_m(\mathbf{x}_i)=\sum_{l_1=1}^n \sum_{l_2=1}^n R_n(\mathbf{\overline{x}}_{l_1,l_2},\mathbf{x}_i) \sum_{m_1=1}^n \sum_{m_2=1}^n s_m(\mathbf{\overline{x}}_{l_1,l_2},\mathbf{\overline{y}}_{m_1,m_2}) \sum_{j=1}^N \sigma_{m,j}R_n(\mathbf{\overline{y}}_{m_1,m_2},\mathbf{y}_j)
 \end{align}
 where $\mathbf{\overline{x}}_{l_1,l_2}$ are the Chebyshev nodes in the target box, and $\mathbf{\overline{y}}_{m_1,m_2}$ are the Chebyshev nodes in the source box.
 
 \subsection{Translation operators}
-This low-rank approximation in equation $(18)$ yields translation operators for this method. For a given mode $m$, we detail each operation.
+This low-rank approximation in equation $(19)$ yields translation operators for this method. For a given mode $m$, we detail each operation.
 \begin{itemize}
 \item $S2M$: The source-to-multipole operation computes weights $W^{m,B}_{m_1,m_2}$ at each Chebyshev node $\mathbf{\overline{y}}_{m_1,m_2}$ by anterpolation in a box $B$.
 \begin{align}
@@ -344,7 +347,7 @@ In general, one advantage of the bbFMM is a small pre-computation even for large
 \subsection{Vectorization of the bbFMM for the modal Green's function}
 A huge disadvantage of the KIFMM was that we would need to separately complete the entire algorithm $2M+1$ times to account for each node. In contrast, with the bbFMM, we can utilize a matrix representation that includes all Chebyshev nodes and all Fourier modes to further accelerate translation operations. We call this representation the vectorization of the bbFMM for the modal Green's function.
 
-Consider $\sigma_m,j$ is the charge of  the $j$th source in the $m$th Fourier mode of $\sigma$ as in $\S3.1$. We can represent this as the $m,j$th entry in a $(2M+1)\times N$ matrix. Performing the $S2M$ step for all modes is now a matrix-matrix multiplication with the analogously-defined $N\times n^2$ matrix with interpolation function entries $R_n(\mathbf{\overline{y}}_{m_1,m_2},\mathbf{y}_j)$. The result is the equivalent density matrix $[W^{m,B}_{m_1,m_2}]$, which has $2M+1$ rows (one for each Fourier mode), and $n^2$ columns (one for each Chebyshev node).
+Consider $\sigma_{m,j}$ is the charge of  the $j$th source in the $m$th Fourier mode of $\sigma$ as in $\S3.1$. We can represent this as the $m,j$th entry in a $(2M+1)\times N$ matrix. Performing the $S2M$ step for all modes is now a matrix-matrix multiplication with the analogously-defined $N\times n^2$ matrix with interpolation function entries $R_n(\mathbf{\overline{y}}_{m_1,m_2},\mathbf{y}_j)$. The result is the equivalent density matrix $[W^{m,B}_{m_1,m_2}]$, which has $2M+1$ rows (one for each Fourier mode), and $n^2$ columns (one for each Chebyshev node).
 
 Further translation operations can now be computed as using matrix operations as well, which in practice can be performed quickly. Using this vectorization representation, we can perform the $S2M$, $M2M$, $L2L$, and $L2T$ operations for every mode at once, rather than $2M+1$ separate runs as in the KIFMM, which is a big computational advantage.
 
